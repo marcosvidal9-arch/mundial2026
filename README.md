@@ -1,12 +1,16 @@
-# Mundial 2026 Oficina - v3 standalone
+# Mundial 2026 · Oficina LA
 
-Esta versión trae la data integrada dentro de `index.html`.
+Versión standalone: abre `index.html` con doble clic.
 
-## Cómo usar
-1. Descomprime el ZIP.
-2. Abre `index.html` con doble clic.
-3. Deberías ver 104 partidos cargados.
+Cambios v4:
+- Diseño tipo dashboard.
+- Logo Heligrafics + texto OFICINA LA.
+- Imagen representativa del Mundial 2026 integrada.
+- Nombre cambiado a "Pronósticos oficina".
+- Tablas de grupos automáticas.
+- Cruces que se van resolviendo con resultados.
+- Partidos de hoy.
+- Resultados guardados en LocalStorage del navegador.
 
-No necesita carpeta `data`, servidor local ni internet.
-
-Nota: los datos vienen desde el PDF base y aún conviene revisar manualmente posibles errores de OCR.
+Nota:
+Los cruces se resuelven automáticamente cuando hay ganador claro. En eliminatorias, si hay empate, no avanza nadie hasta definir marcador/ganador.
