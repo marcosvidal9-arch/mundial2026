@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mundial 2026 Oficina - v3</title>
+  <style>
+:root{
+  --bg:#071d16; --panel:#0d6045; --panel2:#0b4f3a; --line:#88d8bd;
+  --text:#f5fff9; --muted:#bfe7d9; --gold:#f3be26; --danger:#ff6b6b;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 50% 0,#0d6b4b,#071d16 55%);color:var(--text)}
+.hero{padding:32px;display:flex;justify-content:space-between;gap:24px;align-items:center;max-width:1200px;margin:auto}
+.eyebrow{text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:800;margin:0 0 8px}
+h1{font-size:clamp(42px,8vw,96px);line-height:.9;margin:0}
+.subtitle{color:var(--muted);font-size:18px;max-width:620px}
+.hero-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:24px;padding:20px;min-width:220px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.hero-card span{font-size:48px;display:block}.hero-card strong{display:block;font-size:22px}.hero-card small{color:var(--muted)}
+main{max-width:1200px;margin:auto;padding:0 20px 40px}
+.panel{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.22)}
+.controls{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:end}
+label{font-weight:800;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+select,input,button{width:100%;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.2);background:#06291f;color:var(--text);font-size:15px}
+button{cursor:pointer;background:var(--gold);color:#102116;font-weight:900;border:none}
+.tabs{display:flex;gap:10px;margin:18px 0;flex-wrap:wrap}
+.tab{width:auto;background:rgba(255,255,255,.1);color:var(--text);border:1px solid rgba(255,255,255,.18)}
+.tab.active{background:var(--gold);color:#102116}
+.view{display:none}.view.active{display:block}
+.match-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.match{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:14px}
+.match-head{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase}
+.teams{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin:14px 0}
+.team{font-size:17px;font-weight:900}.team.away{text-align:right}.score{display:flex;gap:6px}
+.score input{width:44px;text-align:center;padding:10px;background:#fff;color:#102116;font-weight:900}
+.meta{color:var(--muted);font-size:13px}
+.standings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+.group-card h3{margin:0 0 10px;color:var(--gold)}
+table{width:100%;border-collapse:collapse}
+th,td{padding:9px;border-bottom:1px solid rgba(255,255,255,.12);text-align:left}
+th{color:var(--muted);font-size:12px;text-transform:uppercase}
+.prediction-form{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:10px;margin:16px 0}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:rgba(243,190,38,.18);color:var(--gold);font-weight:900}
+.qc-ok{color:#5dffa9}.qc-warn{color:#ffd166}
+footer{text-align:center;color:var(--muted);padding:30px}
+@media(max-width:800px){.hero{flex-direction:column;align-items:flex-start}.controls,.prediction-form{grid-template-columns:1fr}.hero-card{width:100%}}
+
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Oficina World Cup Tracker</p>
+      <h1>Mundial 2026</h1>
+      <p class="subtitle">Calendario, resultados, tablas y pronósticos para ver con los colegas.</p>
+    </div>
+    <div class="hero-card">
+      <span>⚽</span>
+      <strong id="matchCount">104 partidos</strong>
+      <small>Datos integrados en este archivo</small>
+    </div>
+  </header>
+
+  <main>
+    <section class="controls panel">
+      <label>
+        Equipo
+        <select id="teamFilter"><option value="">Todos</option></select>
+      </label>
+      <label>
+        Grupo
+        <select id="groupFilter"><option value="">Todos</option></select>
+      </label>
+      <label>
+        Fase
+        <select id="phaseFilter"><option value="">Todas</option></select>
+      </label>
+      <label>
+        Buscar
+        <input id="searchInput" placeholder="Ciudad, equipo, partido..." />
+      </label>
+      <button id="clearBtn">Limpiar filtros</button>
+    </section>
+
+    <section class="tabs">
+      <button class="tab active" data-view="calendar">Calendario</button>
+      <button class="tab" data-view="standings">Tablas</button>
+      <button class="tab" data-view="predictions">Polla oficina</button>
+      <button class="tab" data-view="data">Revisión data</button>
+    </section>
+
+    <section id="calendar" class="view active">
+      <div id="matches" class="match-grid"></div>
+    </section>
+
+    <section id="standings" class="view">
+      <div id="standingsGrid" class="standings-grid"></div>
+    </section>
+
+    <section id="predictions" class="view">
+      <div class="panel prediction-panel">
+        <h2>Polla oficina</h2>
+        <p>Agrega colegas y sus predicciones. Se guarda en este navegador con LocalStorage.</p>
+        <div class="prediction-form">
+          <input id="personName" placeholder="Nombre" />
+          <select id="championPick"></select>
+          <select id="runnerPick"></select>
+          <input id="scorerPick" placeholder="Goleador" />
+          <button id="addPrediction">Agregar</button>
+        </div>
+        <table>
+          <thead><tr><th>Colega</th><th>Campeón</th><th>Finalista</th><th>Goleador</th><th></th></tr></thead>
+          <tbody id="predictionRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="data" class="view">
+      <div class="panel">
+        <h2>Revisión rápida</h2>
+        <p>Esta sección ayuda a detectar errores antes de subir a GitHub.</p>
+        <div id="qc"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Hecho para la oficina · Resultados editables manualmente · Horario base ET
+  </footer>
+
+
+
+<script>
+let teams = [{"code": "MEX", "name": "Mexico", "flag": "🇲🇽", "group": "A", "seed": "A1"}, {"code": "RSA", "name": "South Africa", "flag": "🇿🇦", "group": "A", "seed": "A2"}, {"code": "KOR", "name": "South Korea", "flag": "🇰🇷", "group": "A", "seed": "A3"}, {"code": "CZE", "name": "Czechia", "flag": "🇨🇿", "group": "A", "seed": "A4"}, {"code": "CAN", "name": "Canada", "flag": "🇨🇦", "group": "B", "seed": "B1"}, {"code": "QAT", "name": "Qatar", "flag": "🇶🇦", "group": "B", "seed": "B2"}, {"code": "BIH", "name": "Bosnia & Herzegovina", "flag": "🇧🇦", "group": "B", "seed": "B3"}, {"code": "SUI", "name": "Switzerland", "flag": "🇨🇭", "group": "B", "seed": "B4"}, {"code": "BRA", "name": "Brazil", "flag": "🇧🇷", "group": "C", "seed": "C1"}, {"code": "MAR", "name": "Morocco", "flag": "🇲🇦", "group": "C", "seed": "C2"}, {"code": "HAI", "name": "Haiti", "flag": "🇭🇹", "group": "C", "seed": "C3"}, {"code": "SCO", "name": "Scotland", "flag": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "group": "C", "seed": "C4"}, {"code": "USA", "name": "USA", "flag": "🇺🇸", "group": "D", "seed": "D1"}, {"code": "PAR", "name": "Paraguay", "flag": "🇵🇾", "group": "D", "seed": "D2"}, {"code": "AUS", "name": "Australia", "flag": "🇦🇺", "group": "D", "seed": "D3"}, {"code": "TUR", "name": "Türkiye", "flag": "🇹🇷", "group": "D", "seed": "D4"}, {"code": "GER", "name": "Germany", "flag": "🇩🇪", "group": "E", "seed": "E1"}, {"code": "CUW", "name": "Curaçao", "flag": "🇨🇼", "group": "E", "seed": "E2"}, {"code": "CIV", "name": "Ivory Coast", "flag": "🇨🇮", "group": "E", "seed": "E3"}, {"code": "ECU", "name": "Ecuador", "flag": "🇪🇨", "group": "E", "seed": "E4"}, {"code": "NED", "name": "Netherlands", "flag": "🇳🇱", "group": "F", "seed": "F1"}, {"code": "JPN", "name": "Japan", "flag": "🇯🇵", "group": "F", "seed": "F2"}, {"code": "SWE", "name": "Sweden", "flag": "🇸🇪", "group": "F", "seed": "F3"}, {"code": "TUN", "name": "Tunisia", "flag": "🇹🇳", "group": "F", "seed": "F4"}, {"code": "BEL", "name": "Belgium", "flag": "🇧🇪", "group": "G", "seed": "G1"}, {"code": "EGY", "name": "Egypt", "flag": "🇪🇬", "group": "G", "seed": "G2"}, {"code": "IRN", "name": "Iran", "flag": "🇮🇷", "group": "G", "seed": "G3"}, {"code": "NZL", "name": "New Zealand", "flag": "🇳🇿", "group": "G", "seed": "G4"}, {"code": "ESP", "name": "Spain", "flag": "🇪🇸", "group": "H", "seed": "H1"}, {"code": "CPV", "name": "Cape Verde", "flag": "🇨🇻", "group": "H", "seed": "H2"}, {"code": "KSA", "name": "Saudi Arabia", "flag": "🇸🇦", "group": "H", "seed": "H3"}, {"code": "URU", "name": "Uruguay", "flag": "🇺🇾", "group": "H", "seed": "H4"}, {"code": "FRA", "name": "France", "flag": "🇫🇷", "group": "I", "seed": "I1"}, {"code": "SEN", "name": "Senegal", "flag": "🇸🇳", "group": "I", "seed": "I2"}, {"code": "IRQ", "name": "Iraq", "flag": "🇮🇶", "group": "I", "seed": "I3"}, {"code": "NOR", "name": "Norway", "flag": "🇳🇴", "group": "I", "seed": "I4"}, {"code": "ARG", "name": "Argentina", "flag": "🇦🇷", "group": "J", "seed": "J1"}, {"code": "ALG", "name": "Algeria", "flag": "🇩🇿", "group": "J", "seed": "J2"}, {"code": "AUT", "name": "Austria", "flag": "🇦🇹", "group": "J", "seed": "J3"}, {"code": "JOR", "name": "Jordan", "flag": "🇯🇴", "group": "J", "seed": "J4"}, {"code": "POR", "name": "Portugal", "flag": "🇵🇹", "group": "K", "seed": "K1"}, {"code": "COD", "name": "DR Congo", "flag": "🇨🇩", "group": "K", "seed": "K2"}, {"code": "UZB", "name": "Uzbekistan", "flag": "🇺🇿", "group": "K", "seed": "K3"}, {"code": "COL", "name": "Colombia", "flag": "🇨🇴", "group": "K", "seed": "K4"}, {"code": "ENG", "name": "England", "flag": "🏴", "group": "L", "seed": "L1"}, {"code": "CRO", "name": "Croatia", "flag": "🇭🇷", "group": "L", "seed": "L2"}, {"code": "GHA", "name": "Ghana", "flag": "🇬🇭", "group": "L", "seed": "L3"}, {"code": "PAN", "name": "Panama", "flag": "🇵🇦", "group": "L", "seed": "L4"}];
+let matches = [{"id": 1, "phase": "Group Stage", "group": "A", "home": "MEX", "away": "RSA", "home_name": "Mexico", "away_name": "South Africa", "home_flag": "🇲🇽", "away_flag": "🇿🇦", "date": "2026-06-11", "time_et": "15:00", "display": "Thursday, June 11, 3:00 PM ET - Mexico City", "city": "Mexico City"}, {"id": 2, "phase": "Group Stage", "group": "A", "home": "KOR", "away": "CZE", "home_name": "South Korea", "away_name": "Czechia", "home_flag": "🇰🇷", "away_flag": "🇨🇿", "date": "2026-06-11", "time_et": "22:00", "display": "Thursday, June 11, 10:00 PM ET - Guadalajara", "city": "Guadalajara"}, {"id": 3, "phase": "Group Stage", "group": "B", "home": "CAN", "away": "BIH", "home_name": "Canada", "away_name": "Bosnia & Herzegovina", "home_flag": "🇨🇦", "away_flag": "🇧🇦", "date": "2026-06-13", "time_et": "18:00", "display": "Saturday, June 13, 6:00 PM ET - New York", "city": "New York"}, {"id": 4, "phase": "Group Stage", "group": "D", "home": "USA", "away": "PAR", "home_name": "USA", "away_name": "Paraguay", "home_flag": "🇺🇸", "away_flag": "🇵🇾", "date": "2026-06-14", "time_et": "13:00", "display": "Sunday, June 14, 1:00 PM ET - Houston", "city": "Houston"}, {"id": 5, "phase": "Group Stage", "group": "C", "home": "HAI", "away": "SCO", "home_name": "Haiti", "away_name": "Scotland", "home_flag": "🇭🇹", "away_flag": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "date": "2026-06-14", "time_et": "00:00", "display": "Sunday, June 14, 12:00 AM ET - Vancouver", "city": "Vancouver"}, {"id": 6, "phase": "Group Stage", "group": "D", "home": "AUS", "away": "TUR", "home_name": "Australia", "away_name": "Türkiye", "home_flag": "🇦🇺", "away_flag": "🇹🇷", "date": "2026-06-14", "time_et": "19:00", "display": "Sunday, June 14, 7:00 PM ET - Philadelphia", "city": "Philadelphia"}, {"id": 7, "phase": "Group Stage", "group": "C", "home": "BRA", "away": "MAR", "home_name": "Brazil", "away_name": "Morocco", "home_flag": "🇧🇷", "away_flag": "🇲🇦", "date": "2026-06-12", "time_et": "21:00", "display": "Friday, June 12, 9:00 PM ET - Los Angeles", "city": "Los Angeles"}, {"id": 8, "phase": "Group Stage", "group": "B", "home": "QAT", "away": "SUI", "home_name": "Qatar", "away_name": "Switzerland", "home_flag": "🇶🇦", "away_flag": "🇨🇭", "date": "2026-06-13", "time_et": "21:00", "display": "Saturday, June 13, 9:00 PM ET - Boston", "city": "Boston"}, {"id": 9, "phase": "Group Stage", "group": "E", "home": "CIV", "away": "ECU", "home_name": "Ivory Coast", "away_name": "Ecuador", "home_flag": "🇨🇮", "away_flag": "🇪🇨", "date": "2026-06-14", "time_et": "22:00", "display": "Sunday, June 14, 10:00 PM ET - Monterrey", "city": "Monterrey"}, {"id": 10, "phase": "Group Stage", "group": "E", "home": "GER", "away": "CUW", "home_name": "Germany", "away_name": "Curaçao", "home_flag": "🇩🇪", "away_flag": "🇨🇼", "date": "2026-06-14", "time_et": "16:00", "display": "Sunday, June 14, 4:00 PM ET - Dallas", "city": "Dallas"}, {"id": 11, "phase": "Group Stage", "group": "F", "home": "NED", "away": "JPN", "home_name": "Netherlands", "away_name": "Japan", "home_flag": "🇳🇱", "away_flag": "🇯🇵", "date": "2026-06-12", "time_et": "15:00", "display": "Friday, June 12, 3:00 PM ET - Toronto", "city": "Toronto"}, {"id": 12, "phase": "Group Stage", "group": "F", "home": "SWE", "away": "TUN", "home_name": "Sweden", "away_name": "Tunisia", "home_flag": "🇸🇪", "away_flag": "🇹🇳", "date": "2026-06-13", "time_et": "15:00", "display": "Saturday, June 13, 3:00 PM ET - San Francisco", "city": "San Francisco"}, {"id": 13, "phase": "Group Stage", "group": "G", "home": "NZL", "away": "BEL", "home_name": "New Zealand", "away_name": "Belgium", "home_flag": "🇳🇿", "away_flag": "🇧🇪", "date": "2026-06-26", "time_et": "15:00", "display": "Friday, June 26, 3:00 PM ET - Toronto", "city": "Toronto"}, {"id": 14, "phase": "Group Stage", "group": "G", "home": "EGY", "away": "IRN", "home_name": "Egypt", "away_name": "Iran", "home_flag": "🇪🇬", "away_flag": "🇮🇷", "date": "2026-06-26", "time_et": "15:00", "display": "Friday, June 26, 3:00 PM ET - Boston", "city": "Boston"}, {"id": 15, "phase": "Group Stage", "group": "F", "home": "JPN", "away": "SWE", "home_name": "Japan", "away_name": "Sweden", "home_flag": "🇯🇵", "away_flag": "🇸🇪", "date": "2026-06-25", "time_et": "19:00", "display": "Thursday, June 25, 7:00 PM ET - Kansas City", "city": "Kansas City"}, {"id": 16, "phase": "Group Stage", "group": "F", "home": "TUN", "away": "NED", "home_name": "Tunisia", "away_name": "Netherlands", "home_flag": "🇹🇳", "away_flag": "🇳🇱", "date": "2026-06-25", "time_et": "19:00", "display": "Thursday, June 25, 7:00 PM ET - Dallas", "city": "Dallas"}, {"id": 17, "phase": "Group Stage", "group": "H", "home": "URU", "away": "ESP", "home_name": "Uruguay", "away_name": "Spain", "home_flag": "🇺🇾", "away_flag": "🇪🇸", "date": "2026-06-26", "time_et": "20:00", "display": "Friday, June 26, 8:00 PM ET - Houston", "city": "Houston"}, {"id": 18, "phase": "Group Stage", "group": "H", "home": "CPV", "away": "KSA", "home_name": "Cape Verde", "away_name": "Saudi Arabia", "home_flag": "🇨🇻", "away_flag": "🇸🇦", "date": "2026-06-26", "time_et": "20:00", "display": "Friday, June 26, 8:00 PM ET - Guadalajara", "city": "Guadalajara"}, {"id": 19, "phase": "Group Stage", "group": "I", "home": "NOR", "away": "FRA", "home_name": "Norway", "away_name": "France", "home_flag": "🇳🇴", "away_flag": "🇫🇷", "date": "2026-06-27", "time_et": "22:00", "display": "Saturday, June 27, 10:00 PM ET - Kansas City", "city": "Kansas City"}, {"id": 20, "phase": "Group Stage", "group": "I", "home": "SEN", "away": "IRQ", "home_name": "Senegal", "away_name": "Iraq", "home_flag": "🇸🇳", "away_flag": "🇮🇶", "date": "2026-06-27", "time_et": "22:00", "display": "Saturday, June 27, 10:00 PM ET - Dallas", "city": "Dallas"}, {"id": 21, "phase": "Group Stage", "group": "K", "home": "COD", "away": "UZB", "home_name": "DR Congo", "away_name": "Uzbekistan", "home_flag": "🇨🇩", "away_flag": "🇺🇿", "date": "2026-06-27", "time_et": "19:30", "display": "Saturday, June 27, 7:30 PM ET - Atlanta", "city": "Atlanta"}, {"id": 22, "phase": "Group Stage", "group": "K", "home": "COL", "away": "POR", "home_name": "Colombia", "away_name": "Portugal", "home_flag": "🇨🇴", "away_flag": "🇵🇹", "date": "2026-06-27", "time_et": "19:30", "display": "Saturday, June 27, 7:30 PM ET - Miami", "city": "Miami"}, {"id": 23, "phase": "Group Stage", "group": "J", "home": "AUT", "away": "JOR", "home_name": "Austria", "away_name": "Jordan", "home_flag": "🇦🇹", "away_flag": "🇯🇴", "date": "2026-06-27", "time_et": "17:00", "display": "Saturday, June 27, 5:00 PM ET - New York", "city": "New York"}, {"id": 24, "phase": "Group Stage", "group": "J", "home": "JOR", "away": "ARG", "home_name": "Jordan", "away_name": "Argentina", "home_flag": "🇯🇴", "away_flag": "🇦🇷", "date": "2026-06-27", "time_et": "17:00", "display": "Saturday, June 27, 5:00 PM ET - Philadelphia", "city": "Philadelphia"}, {"id": 25, "phase": "Group Stage", "group": "A", "home": "CZE", "away": "RSA", "home_name": "Czechia", "away_name": "South Africa", "home_flag": "🇨🇿", "away_flag": "🇿🇦", "date": "2026-06-18", "time_et": "12:00", "display": "Thursday, June 18, 12:00 PM ET - Atlanta", "city": "Atlanta"}, {"id": 26, "phase": "Group Stage", "group": "B", "home": "SUI", "away": "BIH", "home_name": "Switzerland", "away_name": "Bosnia & Herzegovina", "home_flag": "🇨🇭", "away_flag": "🇧🇦", "date": "2026-06-19", "time_et": "18:00", "display": "Friday, June 19, 6:00 PM ET - Boston", "city": "Boston"}, {"id": 27, "phase": "Group Stage", "group": "B", "home": "CAN", "away": "QAT", "home_name": "Canada", "away_name": "Qatar", "home_flag": "🇨🇦", "away_flag": "🇶🇦", "date": "2026-06-19", "time_et": "20:30", "display": "Friday, June 19, 8:30 PM ET - Philadelphia", "city": "Philadelphia"}, {"id": 28, "phase": "Group Stage", "group": "A", "home": "MEX", "away": "KOR", "home_name": "Mexico", "away_name": "South Korea", "home_flag": "🇲🇽", "away_flag": "🇰🇷", "date": "2026-06-18", "time_et": "21:00", "display": "Thursday, June 18, 9:00 PM ET - Guadalajara", "city": "Guadalajara"}, {"id": 29, "phase": "Group Stage", "group": "C", "home": "BRA", "away": "HAI", "home_name": "Brazil", "away_name": "Haiti", "home_flag": "🇧🇷", "away_flag": "🇭🇹", "date": "2026-06-19", "time_et": "23:00", "display": "Friday, June 19, 11:00 PM ET - San Francisco", "city": "San Francisco"}, {"id": 30, "phase": "Group Stage", "group": "C", "home": "SCO", "away": "MAR", "home_name": "Scotland", "away_name": "Morocco", "home_flag": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "away_flag": "🇲🇦", "date": "2026-06-19", "time_et": "15:00", "display": "Friday, June 19, 3:00 PM ET - Seattle", "city": "Seattle"}, {"id": 31, "phase": "Group Stage", "group": "D", "home": "TUR", "away": "PAR", "home_name": "Türkiye", "away_name": "Paraguay", "home_flag": "🇹🇷", "away_flag": "🇵🇾", "date": "2026-06-20", "time_et": "20:00", "display": "Saturday, June 20, 8:00 PM ET - Kansas City", "city": "Kansas City"}, {"id": 32, "phase": "Group Stage", "group": "D", "home": "USA", "away": "AUS", "home_name": "USA", "away_name": "Australia", "home_flag": "🇺🇸", "away_flag": "🇦🇺", "date": "2026-06-20", "time_et": "16:00", "display": "Saturday, June 20, 4:00 PM ET - Toronto", "city": "Toronto"}, {"id": 33, "phase": "Group Stage", "group": "E", "home": "GER", "away": "CIV", "home_name": "Germany", "away_name": "Ivory Coast", "home_flag": "🇩🇪", "away_flag": "🇨🇮", "date": "2026-06-20", "time_et": "13:00", "display": "Saturday, June 20, 1:00 PM ET - Houston", "city": "Houston"}, {"id": 34, "phase": "Group Stage", "group": "E", "home": "ECU", "away": "CUW", "home_name": "Ecuador", "away_name": "Curaçao", "home_flag": "🇪🇨", "away_flag": "🇨🇼", "date": "2026-06-21", "time_et": "00:00", "display": "Sunday, June 21, 12:00 AM ET - Monterrey", "city": "Monterrey"}, {"id": 35, "phase": "Group Stage", "group": "F", "home": "NED", "away": "SWE", "home_name": "Netherlands", "away_name": "Sweden", "home_flag": "🇳🇱", "away_flag": "🇸🇪", "date": "2026-06-18", "time_et": "15:00", "display": "Thursday, June 18, 3:00 PM ET - Los Angeles", "city": "Los Angeles"}, {"id": 36, "phase": "Group Stage", "group": "F", "home": "TUN", "away": "JPN", "home_name": "Tunisia", "away_name": "Japan", "home_flag": "🇹🇳", "away_flag": "🇯🇵", "date": "2026-06-18", "time_et": "18:00", "display": "Thursday, June 18, 6:00 PM ET - Vancouver", "city": "Vancouver"}, {"id": 37, "phase": "Group Stage", "group": "H", "home": "KSA", "away": "URU", "home_name": "Saudi Arabia", "away_name": "Uruguay", "home_flag": "🇸🇦", "away_flag": "🇺🇾", "date": "2026-06-15", "time_et": "18:00", "display": "Monday, June 15, 6:00 PM ET - Miami", "city": "Miami"}, {"id": 38, "phase": "Group Stage", "group": "H", "home": "ESP", "away": "CPV", "home_name": "Spain", "away_name": "Cape Verde", "home_flag": "🇪🇸", "away_flag": "🇨🇻", "date": "2026-06-15", "time_et": "12:00", "display": "Monday, June 15, 12:00 PM ET - Atlanta", "city": "Atlanta"}, {"id": 39, "phase": "Group Stage", "group": "G", "home": "BEL", "away": "EGY", "home_name": "Belgium", "away_name": "Egypt", "home_flag": "🇧🇪", "away_flag": "🇪🇬", "date": "2026-06-15", "time_et": "15:00", "display": "Monday, June 15, 3:00 PM ET - Seattle", "city": "Seattle"}, {"id": 40, "phase": "Group Stage", "group": "G", "home": "IRN", "away": "NZL", "home_name": "Iran", "away_name": "New Zealand", "home_flag": "🇮🇷", "away_flag": "🇳🇿", "date": "2026-06-15", "time_et": "21:00", "display": "Monday, June 15, 9:00 PM ET - Los Angeles", "city": "Los Angeles"}, {"id": 41, "phase": "Group Stage", "group": "I", "home": "IRQ", "away": "NOR", "home_name": "Iraq", "away_name": "Norway", "home_flag": "🇮🇶", "away_flag": "🇳🇴", "date": "2026-06-16", "time_et": "18:00", "display": "Tuesday, June 16, 6:00 PM ET - Boston", "city": "Boston"}, {"id": 42, "phase": "Group Stage", "group": "I", "home": "FRA", "away": "SEN", "home_name": "France", "away_name": "Senegal", "home_flag": "🇫🇷", "away_flag": "🇸🇳", "date": "2026-06-16", "time_et": "15:00", "display": "Tuesday, June 16, 3:00 PM ET - New York", "city": "New York"}, {"id": 43, "phase": "Group Stage", "group": "J", "home": "ARG", "away": "AUT", "home_name": "Argentina", "away_name": "Austria", "home_flag": "🇦🇷", "away_flag": "🇦🇹", "date": "2026-06-16", "time_et": "21:00", "display": "Tuesday, June 16, 9:00 PM ET - Kansas City", "city": "Kansas City"}, {"id": 44, "phase": "Group Stage", "group": "J", "home": "JOR", "away": "ALG", "home_name": "Jordan", "away_name": "Algeria", "home_flag": "🇯🇴", "away_flag": "🇩🇿", "date": "2026-06-17", "time_et": "00:00", "display": "Wednesday, June 17, 12:00 AM ET - San Francisco", "city": "San Francisco"}, {"id": 45, "phase": "Group Stage", "group": "L", "home": "ENG", "away": "CRO", "home_name": "England", "away_name": "Croatia", "home_flag": "🏴", "away_flag": "🇭🇷", "date": "2026-06-17", "time_et": "16:00", "display": "Wednesday, June 17, 4:00 PM ET - Dallas", "city": "Dallas"}, {"id": 46, "phase": "Group Stage", "group": "L", "home": "GHA", "away": "PAN", "home_name": "Ghana", "away_name": "Panama", "home_flag": "🇬🇭", "away_flag": "🇵🇦", "date": "2026-06-17", "time_et": "19:00", "display": "Wednesday, June 17, 7:00 PM ET - Toronto", "city": "Toronto"}, {"id": 47, "phase": "Group Stage", "group": "K", "home": "POR", "away": "COD", "home_name": "Portugal", "away_name": "DR Congo", "home_flag": "🇵🇹", "away_flag": "🇨🇩", "date": "2026-06-17", "time_et": "13:00", "display": "Wednesday, June 17, 1:00 PM ET - Houston", "city": "Houston"}, {"id": 48, "phase": "Group Stage", "group": "K", "home": "UZB", "away": "COL", "home_name": "Uzbekistan", "away_name": "Colombia", "home_flag": "🇺🇿", "away_flag": "🇨🇴", "date": "2026-06-17", "time_et": "22:00", "display": "Wednesday, June 17, 10:00 PM ET - Mexico City", "city": "Mexico City"}, {"id": 49, "phase": "Group Stage", "group": "C", "home": "SCO", "away": "BRA", "home_name": "Scotland", "away_name": "Brazil", "home_flag": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "away_flag": "🇧🇷", "date": "2026-06-25", "time_et": "22:00", "display": "Thursday, June 25, 10:00 PM ET - Los Angeles", "city": "Los Angeles"}, {"id": 50, "phase": "Group Stage", "group": "C", "home": "MAR", "away": "HAI", "home_name": "Morocco", "away_name": "Haiti", "home_flag": "🇲🇦", "away_flag": "🇭🇹", "date": "2026-06-25", "time_et": "22:00", "display": "Thursday, June 25, 10:00 PM ET - San Francisco", "city": "San Francisco"}, {"id": 51, "phase": "Group Stage", "group": "B", "home": "SUI", "away": "CAN", "home_name": "Switzerland", "away_name": "Canada", "home_flag": "🇨🇭", "away_flag": "🇨🇦", "date": "2026-06-24", "time_et": "18:00", "display": "Wednesday, June 24, 6:00 PM ET - Miami", "city": "Miami"}, {"id": 52, "phase": "Group Stage", "group": "B", "home": "BIH", "away": "QAT", "home_name": "Bosnia & Herzegovina", "away_name": "Qatar", "home_flag": "🇧🇦", "away_flag": "🇶🇦", "date": "2026-06-24", "time_et": "18:00", "display": "Wednesday, June 24, 6:00 PM ET - Atlanta", "city": "Atlanta"}, {"id": 53, "phase": "Group Stage", "group": "A", "home": "CZE", "away": "MEX", "home_name": "Czechia", "away_name": "Mexico", "home_flag": "🇨🇿", "away_flag": "🇲🇽", "date": "2026-06-24", "time_et": "21:00", "display": "Wednesday, June 24, 9:00 PM ET - Mexico City", "city": "Mexico City"}, {"id": 54, "phase": "Group Stage", "group": "A", "home": "RSA", "away": "KOR", "home_name": "South Africa", "away_name": "South Korea", "home_flag": "🇿🇦", "away_flag": "🇰🇷", "date": "2026-06-24", "time_et": "21:00", "display": "Wednesday, June 24, 9:00 PM ET - Monterrey", "city": "Monterrey"}, {"id": 55, "phase": "Group Stage", "group": "E", "home": "CUW", "away": "CIV", "home_name": "Curaçao", "away_name": "Ivory Coast", "home_flag": "🇨🇼", "away_flag": "🇨🇮", "date": "2026-06-26", "time_et": "23:00", "display": "Friday, June 26, 11:00 PM ET - Seattle", "city": "Seattle"}, {"id": 56, "phase": "Group Stage", "group": "E", "home": "ECU", "away": "GER", "home_name": "Ecuador", "away_name": "Germany", "home_flag": "🇪🇨", "away_flag": "🇩🇪", "date": "2026-06-26", "time_et": "23:00", "display": "Friday, June 26, 11:00 PM ET - Vancouver", "city": "Vancouver"}, {"id": 57, "phase": "Group Stage", "group": "L", "home": "PAN", "away": "ENG", "home_name": "Panama", "away_name": "England", "home_flag": "🇵🇦", "away_flag": "🏴", "date": "2026-06-24", "time_et": "15:00", "display": "Wednesday, June 24, 3:00 PM ET - Vancouver", "city": "Vancouver"}, {"id": 58, "phase": "Group Stage", "group": "L", "home": "CRO", "away": "GHA", "home_name": "Croatia", "away_name": "Ghana", "home_flag": "🇭🇷", "away_flag": "🇬🇭", "date": "2026-06-24", "time_et": "15:00", "display": "Wednesday, June 24, 3:00 PM ET - Seattle", "city": "Seattle"}, {"id": 59, "phase": "Group Stage", "group": "D", "home": "TUR", "away": "USA", "home_name": "Türkiye", "away_name": "USA", "home_flag": "🇹🇷", "away_flag": "🇺🇸", "date": "2026-06-25", "time_et": "16:00", "display": "Thursday, June 25, 4:00 PM ET - Philadelphia", "city": "Philadelphia"}, {"id": 60, "phase": "Group Stage", "group": "D", "home": "PAR", "away": "AUS", "home_name": "Paraguay", "away_name": "Australia", "home_flag": "🇵🇾", "away_flag": "🇦🇺", "date": "2026-06-25", "time_et": "16:00", "display": "Thursday, June 25, 4:00 PM ET - New York", "city": "New York"}, {"id": 61, "phase": "Group Stage", "group": "I", "home": "FRA", "away": "IRQ", "home_name": "France", "away_name": "Iraq", "home_flag": "🇫🇷", "away_flag": "🇮🇶", "date": "2026-06-22", "time_et": "17:00", "display": "Monday, June 22, 5:00 PM ET - Philadelphia", "city": "Philadelphia"}, {"id": 62, "phase": "Group Stage", "group": "I", "home": "NOR", "away": "SEN", "home_name": "Norway", "away_name": "Senegal", "home_flag": "🇳🇴", "away_flag": "🇸🇳", "date": "2026-06-22", "time_et": "20:00", "display": "Monday, June 22, 8:00 PM ET - New York", "city": "New York"}, {"id": 63, "phase": "Group Stage", "group": "G", "home": "BEL", "away": "IRN", "home_name": "Belgium", "away_name": "Iran", "home_flag": "🇧🇪", "away_flag": "🇮🇷", "date": "2026-06-21", "time_et": "15:00", "display": "Sunday, June 21, 3:00 PM ET - Los Angeles", "city": "Los Angeles"}, {"id": 64, "phase": "Group Stage", "group": "G", "home": "NZL", "away": "EGY", "home_name": "New Zealand", "away_name": "Egypt", "home_flag": "🇳🇿", "away_flag": "🇪🇬", "date": "2026-06-21", "time_et": "21:00", "display": "Sunday, June 21, 9:00 PM ET - Vancouver", "city": "Vancouver"}, {"id": 65, "phase": "Group Stage", "group": "H", "home": "ESP", "away": "KSA", "home_name": "Spain", "away_name": "Saudi Arabia", "home_flag": "🇪🇸", "away_flag": "🇸🇦", "date": "2026-06-21", "time_et": "12:00", "display": "Sunday, June 21, 12:00 PM ET - Atlanta", "city": "Atlanta"}, {"id": 66, "phase": "Group Stage", "group": "H", "home": "URU", "away": "CPV", "home_name": "Uruguay", "away_name": "Cape Verde", "home_flag": "🇺🇾", "away_flag": "🇨🇻", "date": "2026-06-21", "time_et": "18:00", "display": "Sunday, June 21, 6:00 PM ET - Miami", "city": "Miami"}, {"id": 67, "phase": "Group Stage", "group": "L", "home": "ENG", "away": "GHA", "home_name": "England", "away_name": "Ghana", "home_flag": "🏴", "away_flag": "🇬🇭", "date": "2026-06-23", "time_et": "16:00", "display": "Tuesday, June 23, 4:00 PM ET - Boston", "city": "Boston"}, {"id": 68, "phase": "Group Stage", "group": "L", "home": "PAN", "away": "CRO", "home_name": "Panama", "away_name": "Croatia", "home_flag": "🇵🇦", "away_flag": "🇭🇷", "date": "2026-06-23", "time_et": "19:00", "display": "Tuesday, June 23, 7:00 PM ET - Toronto", "city": "Toronto"}, {"id": 69, "phase": "Group Stage", "group": "J", "home": "ARG", "away": "ALG", "home_name": "Argentina", "away_name": "Algeria", "home_flag": "🇦🇷", "away_flag": "🇩🇿", "date": "2026-06-22", "time_et": "13:00", "display": "Monday, June 22, 1:00 PM ET - Dallas", "city": "Dallas"}, {"id": 70, "phase": "Group Stage", "group": "J", "home": "ALG", "away": "AUT", "home_name": "Algeria", "away_name": "Austria", "home_flag": "🇩🇿", "away_flag": "🇦🇹", "date": "2026-06-22", "time_et": "23:00", "display": "Monday, June 22, 11:00 PM ET - San Francisco", "city": "San Francisco"}, {"id": 71, "phase": "Group Stage", "group": "K", "home": "POR", "away": "UZB", "home_name": "Portugal", "away_name": "Uzbekistan", "home_flag": "🇵🇹", "away_flag": "🇺🇿", "date": "2026-06-23", "time_et": "13:00", "display": "Tuesday, June 23, 1:00 PM ET - Houston", "city": "Houston"}, {"id": 72, "phase": "Group Stage", "group": "K", "home": "COL", "away": "COD", "home_name": "Colombia", "away_name": "DR Congo", "home_flag": "🇨🇴", "away_flag": "🇨🇩", "date": "2026-06-23", "time_et": "22:00", "display": "Tuesday, June 23, 10:00 PM ET - Guadalajara", "city": "Guadalajara"}, {"id": 73, "phase": "Round of 32", "group": "", "home": "2A", "away": "2B", "home_name": "2A", "away_name": "2B", "home_flag": "", "away_flag": "", "date": "2026-06-28", "time_et": "15:00", "city": "Los Angeles", "display": "2026-06-28 15:00 ET - Los Angeles"}, {"id": 74, "phase": "Round of 32", "group": "", "home": "1E", "away": "3ABCDF", "home_name": "1E", "away_name": "3ABCDF", "home_flag": "", "away_flag": "", "date": "2026-06-29", "time_et": "16:30", "city": "Boston", "display": "2026-06-29 16:30 ET - Boston"}, {"id": 75, "phase": "Round of 32", "group": "", "home": "1F", "away": "2C", "home_name": "1F", "away_name": "2C", "home_flag": "", "away_flag": "", "date": "2026-06-29", "time_et": "21:00", "city": "Monterrey", "display": "2026-06-29 21:00 ET - Monterrey"}, {"id": 76, "phase": "Round of 32", "group": "", "home": "1C", "away": "2F", "home_name": "1C", "away_name": "2F", "home_flag": "", "away_flag": "", "date": "2026-06-29", "time_et": "13:00", "city": "Houston", "display": "2026-06-29 13:00 ET - Houston"}, {"id": 77, "phase": "Round of 32", "group": "", "home": "1I", "away": "3CDFGH", "home_name": "1I", "away_name": "3CDFGH", "home_flag": "", "away_flag": "", "date": "2026-06-30", "time_et": "17:00", "city": "New York", "display": "2026-06-30 17:00 ET - New York"}, {"id": 78, "phase": "Round of 32", "group": "", "home": "2E", "away": "2I", "home_name": "2E", "away_name": "2I", "home_flag": "", "away_flag": "", "date": "2026-06-30", "time_et": "13:00", "city": "Dallas", "display": "2026-06-30 13:00 ET - Dallas"}, {"id": 79, "phase": "Round of 32", "group": "", "home": "1A", "away": "3CEFHI", "home_name": "1A", "away_name": "3CEFHI", "home_flag": "", "away_flag": "", "date": "2026-06-30", "time_et": "21:00", "city": "Mexico City", "display": "2026-06-30 21:00 ET - Mexico City"}, {"id": 80, "phase": "Round of 32", "group": "", "home": "1L", "away": "3EHIJK", "home_name": "1L", "away_name": "3EHIJK", "home_flag": "", "away_flag": "", "date": "2026-07-01", "time_et": "12:00", "city": "Atlanta", "display": "2026-07-01 12:00 ET - Atlanta"}, {"id": 81, "phase": "Round of 32", "group": "", "home": "1D", "away": "3BEFIJ", "home_name": "1D", "away_name": "3BEFIJ", "home_flag": "", "away_flag": "", "date": "2026-07-01", "time_et": "20:00", "city": "San Francisco", "display": "2026-07-01 20:00 ET - San Francisco"}, {"id": 82, "phase": "Round of 32", "group": "", "home": "1G", "away": "3AEHIJ", "home_name": "1G", "away_name": "3AEHIJ", "home_flag": "", "away_flag": "", "date": "2026-07-01", "time_et": "16:00", "city": "Seattle", "display": "2026-07-01 16:00 ET - Seattle"}, {"id": 83, "phase": "Round of 32", "group": "", "home": "2K", "away": "2L", "home_name": "2K", "away_name": "2L", "home_flag": "", "away_flag": "", "date": "2026-07-02", "time_et": "19:00", "city": "Toronto", "display": "2026-07-02 19:00 ET - Toronto"}, {"id": 84, "phase": "Round of 32", "group": "", "home": "1H", "away": "2J", "home_name": "1H", "away_name": "2J", "home_flag": "", "away_flag": "", "date": "2026-07-02", "time_et": "15:00", "city": "Los Angeles", "display": "2026-07-02 15:00 ET - Los Angeles"}, {"id": 85, "phase": "Round of 32", "group": "", "home": "1B", "away": "3EFGIJ", "home_name": "1B", "away_name": "3EFGIJ", "home_flag": "", "away_flag": "", "date": "2026-07-02", "time_et": "23:00", "city": "Vancouver", "display": "2026-07-02 23:00 ET - Vancouver"}, {"id": 86, "phase": "Round of 32", "group": "", "home": "1J", "away": "2H", "home_name": "1J", "away_name": "2H", "home_flag": "", "away_flag": "", "date": "2026-07-03", "time_et": "18:00", "city": "Miami", "display": "2026-07-03 18:00 ET - Miami"}, {"id": 87, "phase": "Round of 32", "group": "", "home": "1K", "away": "3DEIJL", "home_name": "1K", "away_name": "3DEIJL", "home_flag": "", "away_flag": "", "date": "2026-07-03", "time_et": "21:30", "city": "Kansas City", "display": "2026-07-03 21:30 ET - Kansas City"}, {"id": 88, "phase": "Round of 32", "group": "", "home": "2D", "away": "2G", "home_name": "2D", "away_name": "2G", "home_flag": "", "away_flag": "", "date": "2026-07-03", "time_et": "14:00", "city": "Dallas", "display": "2026-07-03 14:00 ET - Dallas"}, {"id": 89, "phase": "Round of 16", "group": "", "home": "W74", "away": "W77", "home_name": "W74", "away_name": "W77", "home_flag": "", "away_flag": "", "date": "2026-07-04", "time_et": "17:00", "city": "Philadelphia", "display": "2026-07-04 17:00 ET - Philadelphia"}, {"id": 90, "phase": "Round of 16", "group": "", "home": "W73", "away": "W75", "home_name": "W73", "away_name": "W75", "home_flag": "", "away_flag": "", "date": "2026-07-04", "time_et": "13:00", "city": "Houston", "display": "2026-07-04 13:00 ET - Houston"}, {"id": 91, "phase": "Round of 16", "group": "", "home": "W76", "away": "W78", "home_name": "W76", "away_name": "W78", "home_flag": "", "away_flag": "", "date": "2026-07-05", "time_et": "16:00", "city": "New York", "display": "2026-07-05 16:00 ET - New York"}, {"id": 92, "phase": "Round of 16", "group": "", "home": "W79", "away": "W80", "home_name": "W79", "away_name": "W80", "home_flag": "", "away_flag": "", "date": "2026-07-05", "time_et": "20:00", "city": "Mexico City", "display": "2026-07-05 20:00 ET - Mexico City"}, {"id": 93, "phase": "Round of 16", "group": "", "home": "W83", "away": "W84", "home_name": "W83", "away_name": "W84", "home_flag": "", "away_flag": "", "date": "2026-07-06", "time_et": "15:00", "city": "Dallas", "display": "2026-07-06 15:00 ET - Dallas"}, {"id": 94, "phase": "Round of 16", "group": "", "home": "W81", "away": "W82", "home_name": "W81", "away_name": "W82", "home_flag": "", "away_flag": "", "date": "2026-07-06", "time_et": "20:00", "city": "Seattle", "display": "2026-07-06 20:00 ET - Seattle"}, {"id": 95, "phase": "Round of 16", "group": "", "home": "W86", "away": "W88", "home_name": "W86", "away_name": "W88", "home_flag": "", "away_flag": "", "date": "2026-07-07", "time_et": "12:00", "city": "Atlanta", "display": "2026-07-07 12:00 ET - Atlanta"}, {"id": 96, "phase": "Round of 16", "group": "", "home": "W85", "away": "W87", "home_name": "W85", "away_name": "W87", "home_flag": "", "away_flag": "", "date": "2026-07-07", "time_et": "16:00", "city": "Vancouver", "display": "2026-07-07 16:00 ET - Vancouver"}, {"id": 97, "phase": "Quarter-final", "group": "", "home": "W89", "away": "W90", "home_name": "W89", "away_name": "W90", "home_flag": "", "away_flag": "", "date": "2026-07-09", "time_et": "16:00", "city": "Boston", "display": "2026-07-09 16:00 ET - Boston"}, {"id": 98, "phase": "Quarter-final", "group": "", "home": "W93", "away": "W94", "home_name": "W93", "away_name": "W94", "home_flag": "", "away_flag": "", "date": "2026-07-10", "time_et": "15:00", "city": "Los Angeles", "display": "2026-07-10 15:00 ET - Los Angeles"}, {"id": 99, "phase": "Quarter-final", "group": "", "home": "W91", "away": "W92", "home_name": "W91", "away_name": "W92", "home_flag": "", "away_flag": "", "date": "2026-07-11", "time_et": "17:00", "city": "Miami", "display": "2026-07-11 17:00 ET - Miami"}, {"id": 100, "phase": "Quarter-final", "group": "", "home": "W95", "away": "W96", "home_name": "W95", "away_name": "W96", "home_flag": "", "away_flag": "", "date": "2026-07-11", "time_et": "21:00", "city": "Kansas City", "display": "2026-07-11 21:00 ET - Kansas City"}, {"id": 101, "phase": "Semi-final", "group": "", "home": "W97", "away": "W98", "home_name": "W97", "away_name": "W98", "home_flag": "", "away_flag": "", "date": "2026-07-14", "time_et": "15:00", "city": "Dallas", "display": "2026-07-14 15:00 ET - Dallas"}, {"id": 102, "phase": "Semi-final", "group": "", "home": "W99", "away": "W100", "home_name": "W99", "away_name": "W100", "home_flag": "", "away_flag": "", "date": "2026-07-15", "time_et": "15:00", "city": "Atlanta", "display": "2026-07-15 15:00 ET - Atlanta"}, {"id": 103, "phase": "Third place", "group": "", "home": "RU101", "away": "RU102", "home_name": "RU101", "away_name": "RU102", "home_flag": "", "away_flag": "", "date": "2026-07-18", "time_et": "17:00", "city": "Miami", "display": "2026-07-18 17:00 ET - Miami"}, {"id": 104, "phase": "Final", "group": "", "home": "W101", "away": "W102", "home_name": "W101", "away_name": "W102", "home_flag": "", "away_flag": "", "date": "2026-07-19", "time_et": "15:00", "city": "New York", "display": "2026-07-19 15:00 ET - New York"}];
+</script>
+<script>
+let results = JSON.parse(localStorage.getItem("wc2026_results") || "{}");
+let predictions = JSON.parse(localStorage.getItem("wc2026_predictions") || "[]");
+
+const $ = (id) => document.getElementById(id);
+
+function init(){
+  $("matchCount").textContent = `${matches.length} partidos`;
+  fillFilters();
+  bindEvents();
+  renderMatches();
+  renderStandings();
+  renderPredictions();
+  renderQC();
+}
+
+function fillFilters(){
+  teams.forEach(t=>{
+    const opt = new Option(`${t.flag} ${t.name}`, t.code);
+    $("teamFilter").appendChild(opt);
+    $("championPick").appendChild(new Option(`${t.flag} ${t.name}`, t.code));
+    $("runnerPick").appendChild(new Option(`${t.flag} ${t.name}`, t.code));
+  });
+  [...new Set(teams.map(t=>t.group))].forEach(g=>$("groupFilter").appendChild(new Option(`Grupo ${g}`, g)));
+  [...new Set(matches.map(m=>m.phase))].forEach(p=>$("phaseFilter").appendChild(new Option(p, p)));
+}
+
+function bindEvents(){
+  ["teamFilter","groupFilter","phaseFilter","searchInput"].forEach(id=>$(id).addEventListener("input", renderMatches));
+  $("clearBtn").addEventListener("click",()=>{
+    $("teamFilter").value=$("groupFilter").value=$("phaseFilter").value=$("searchInput").value="";
+    renderMatches();
+  });
+  document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{
+    document.querySelectorAll(".tab,.view").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");
+    $(btn.dataset.view).classList.add("active");
+    renderStandings();
+    renderQC();
+  }));
+  $("addPrediction").addEventListener("click",()=>{
+    const name=$("personName").value.trim();
+    if(!name) return alert("Falta el nombre del colega");
+    predictions.push({name, champion:$("championPick").value, runner:$("runnerPick").value, scorer:$("scorerPick").value.trim()});
+    localStorage.setItem("wc2026_predictions", JSON.stringify(predictions));
+    $("personName").value=$("scorerPick").value="";
+    renderPredictions();
+  });
+}
+
+function teamInfo(code){ return teams.find(t=>t.code===code) || {code,name:code,flag:""}; }
+
+function filteredMatches(){
+  const team=$("teamFilter").value, group=$("groupFilter").value, phase=$("phaseFilter").value, q=$("searchInput").value.toLowerCase();
+  return matches.filter(m=>{
+    if(team && m.home!==team && m.away!==team) return false;
+    if(group && m.group!==group) return false;
+    if(phase && m.phase!==phase) return false;
+    const txt = `${m.id} ${m.home_name} ${m.away_name} ${m.home} ${m.away} ${m.city} ${m.phase}`.toLowerCase();
+    if(q && !txt.includes(q)) return false;
+    return true;
+  }).sort((a,b)=> (a.date+a.time_et).localeCompare(b.date+b.time_et));
+}
+
+function renderMatches(){
+  $("matches").innerHTML = filteredMatches().map(m=>{
+    const r = results[m.id] || {};
+    return `<article class="match">
+      <div class="match-head"><span>Match ${m.id}</span><span>${m.phase}${m.group ? " · Grupo "+m.group : ""}</span></div>
+      <div class="teams">
+        <div class="team">${m.home_flag||""} ${m.home_name}</div>
+        <div class="score">
+          <input type="number" min="0" value="${r.home ?? ""}" onchange="saveScore(${m.id}, 'home', this.value)" />
+          <input type="number" min="0" value="${r.away ?? ""}" onchange="saveScore(${m.id}, 'away', this.value)" />
+        </div>
+        <div class="team away">${m.away_name} ${m.away_flag||""}</div>
+      </div>
+      <div class="meta">${m.date} · ${m.time_et} ET · ${m.city}</div>
+    </article>`
+  }).join("");
+}
+
+function saveScore(id, side, value){
+  results[id] = results[id] || {};
+  if(value === "") delete results[id][side];
+  else results[id][side] = Number(value);
+  localStorage.setItem("wc2026_results", JSON.stringify(results));
+  renderStandings();
+}
+
+function renderStandings(){
+  const groups = [...new Set(teams.map(t=>t.group))];
+  $("standingsGrid").innerHTML = groups.map(g=>{
+    const rows = teams.filter(t=>t.group===g).map(t=>({ ...t, PJ:0, PG:0, PE:0, PP:0, GF:0, GC:0, DG:0, PTS:0 }));
+    const byCode = Object.fromEntries(rows.map(r=>[r.code,r]));
+    matches.filter(m=>m.phase==="Group Stage" && m.group===g).forEach(m=>{
+      const r=results[m.id];
+      if(!r || r.home === undefined || r.away === undefined) return;
+      const h=byCode[m.home], a=byCode[m.away];
+      h.PJ++; a.PJ++; h.GF+=r.home; h.GC+=r.away; a.GF+=r.away; a.GC+=r.home;
+      if(r.home>r.away){h.PG++; a.PP++; h.PTS+=3}
+      else if(r.home<r.away){a.PG++; h.PP++; a.PTS+=3}
+      else {h.PE++; a.PE++; h.PTS++; a.PTS++}
+      h.DG=h.GF-h.GC; a.DG=a.GF-a.GC;
+    });
+    rows.sort((a,b)=> b.PTS-a.PTS || b.DG-a.DG || b.GF-a.GF || a.name.localeCompare(b.name));
+    return `<div class="panel group-card"><h3>Grupo ${g}</h3>
+      <table><thead><tr><th>Equipo</th><th>PTS</th><th>PJ</th><th>DG</th><th>GF</th></tr></thead>
+      <tbody>${rows.map(r=>`<tr><td>${r.flag} ${r.name}</td><td><b>${r.PTS}</b></td><td>${r.PJ}</td><td>${r.DG}</td><td>${r.GF}</td></tr>`).join("")}</tbody></table>
+    </div>`;
+  }).join("");
+}
+
+function renderPredictions(){
+  $("predictionRows").innerHTML = predictions.map((p,i)=>{
+    const c=teamInfo(p.champion), r=teamInfo(p.runner);
+    return `<tr><td>${p.name}</td><td>${c.flag} ${c.name}</td><td>${r.flag} ${r.name}</td><td>${p.scorer||"-"}</td><td><button onclick="deletePrediction(${i})">X</button></td></tr>`
+  }).join("");
+}
+function deletePrediction(i){
+  predictions.splice(i,1);
+  localStorage.setItem("wc2026_predictions", JSON.stringify(predictions));
+  renderPredictions();
+}
+
+function renderQC(){
+  const groupMatches = matches.filter(m=>m.phase==="Group Stage").length;
+  const allGroups = [...new Set(teams.map(t=>t.group))].length;
+  const duplicated = matches.length - new Set(matches.map(m=>m.id)).size;
+  $("qc").innerHTML = `
+    <p><span class="badge">${matches.length}</span> partidos cargados.</p>
+    <p><span class="badge">${groupMatches}</span> partidos de fase de grupos.</p>
+    <p><span class="badge">${teams.length}</span> selecciones en <span class="badge">${allGroups}</span> grupos.</p>
+    <p class="${duplicated ? "qc-warn":"qc-ok"}">${duplicated ? duplicated+" IDs duplicados detectados" : "Sin IDs duplicados detectados"}.</p>
+    <p class="qc-warn">Pendiente: revisar manualmente horarios y emparejamientos contra el PDF antes de publicar.</p>
+  `;
+}
+
+init();
+
+</script>
+</body>
+</html>
