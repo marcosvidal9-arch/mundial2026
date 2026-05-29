@@ -208,6 +208,42 @@ select,input{width:100%;margin-top:6px;padding:11px 12px;border-radius:8px;borde
   .team{font-size:13px}
   .score-input{width:36px;height:36px}
 }
+
+
+/* ===== V11: tema claro/oscuro + filtros móviles ===== */
+body.light{
+  --bg:#f4f8f5; --panel:#ffffff; --panel2:#eef7f1; --line:#cfe3d8;
+  --text:#092019; --muted:#557268; --green:#16a34a; --gold:#b88200; --red:#dc2626;
+  background:linear-gradient(180deg,#edf8f0 0%,#f7faf8 45%,#ffffff 100%);
+}
+body.light:before{opacity:.035;filter:saturate(.6)}
+body.light .panel{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(240,248,244,.98));border-color:rgba(22,163,74,.25);box-shadow:0 16px 40px rgba(12,45,31,.10)}
+body.light .nav{background:rgba(255,255,255,.86);border-color:rgba(10,40,30,.14)}
+body.light button, body.light .btn, body.light select, body.light input{background:#ffffff;color:var(--text);border-color:#cfe3d8}
+body.light .tab{color:#3d5b52}
+body.light .tab.active{color:white;background:linear-gradient(135deg,#16a34a,#22c55e)}
+body.light .match, body.light .mini-card, body.light .bracket-card, body.light .day-card, body.light .day-detail-card{background:rgba(9,65,43,.045);border-color:rgba(9,65,43,.12)}
+body.light .score-input{background:#ffffff;color:#071b16;border-color:#b9d5c9}
+body.light .date, body.light .vs, body.light .team{color:#092019}
+body.light .status, body.light .note, body.light .city{color:#557268}
+body.light .today-card{background:rgba(22,163,74,.08);border-color:rgba(22,163,74,.25)}
+.theme-btn{white-space:nowrap}
+.mobile-filter-btn{display:none;position:fixed;right:14px;bottom:18px;z-index:80;background:linear-gradient(135deg,#16a34a,#22c55e);color:white;border:0;border-radius:999px;padding:14px 18px;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.filter-overlay{display:none;position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.55);backdrop-filter:blur(4px)}
+.filter-overlay.open{display:block}
+.filter-drawer{position:absolute;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid rgba(34,197,94,.35);border-radius:22px 22px 0 0;box-shadow:0 -20px 60px rgba(0,0,0,.35);padding:16px;max-height:82vh;overflow:auto}
+.drawer-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
+.drawer-head h3{margin:0;font-size:18px;text-transform:uppercase;letter-spacing:.04em}
+.drawer-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.drawer-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:720px){
+  aside{order:0}
+  .mobile-filter-btn{display:block}
+  .desktop-filter-panel{display:none}
+  .app{padding-bottom:78px}
+  .nav{padding-right:8px}
+}
+
 </style>
 </head>
 <body>
@@ -226,12 +262,13 @@ select,input{width:100%;margin-top:6px;padding:11px 12px;border-radius:8px;borde
     <button class="tab" data-view="predictionsView">🎯 Pronósticos oficina</button>
     <button class="tab" data-view="dataView">🔎 Revisión data</button>
     <span class="spacer"></span>
+    <button id="themeBtn" class="theme-btn">🌙 Oscuro</button>
     <button id="resetBtn">↻ Resetear resultados</button>
   </nav>
 
   <main class="grid">
     <aside>
-      <section class="panel">
+      <section class="panel desktop-filter-panel">
         <h3>Filtros</h3>
         <div class="panel-body filters">
           <label>Equipo<select id="teamFilter"><option value="">Todos</option></select></label>
@@ -308,6 +345,28 @@ select,input{width:100%;margin-top:6px;padding:11px 12px;border-radius:8px;borde
       <section class="panel"><h2>⚽ Cruces</h2><div id="quickBracket" class="bracket-list"></div></section>
     </aside>
   </main>
+
+
+<button id="mobileFilterBtn" class="mobile-filter-btn">⚙️ Filtros</button>
+<div id="filterOverlay" class="filter-overlay" aria-hidden="true">
+  <div class="filter-drawer">
+    <div class="drawer-head">
+      <h3>⚙️ Filtros</h3>
+      <button id="closeMobileFilters">Cerrar</button>
+    </div>
+    <div class="drawer-grid">
+      <label>Equipo<select id="mTeamFilter"><option value="">Todos</option></select></label>
+      <label>Grupo<select id="mGroupFilter"><option value="">Todos</option></select></label>
+      <label>Fase<select id="mPhaseFilter"><option value="">Todas</option></select></label>
+      <label>Buscar<input id="mSearchInput" placeholder="Equipo, ciudad, partido..."></label>
+    </div>
+    <div class="drawer-actions">
+      <button id="mClearBtn">Limpiar</button>
+      <button class="green" id="applyMobileFilters">Aplicar</button>
+    </div>
+  </div>
+</div>
+
 </div>
 
 <script>
@@ -317,11 +376,51 @@ let results = JSON.parse(localStorage.getItem("wc2026_results") || "{}");
 let predictions = JSON.parse(localStorage.getItem("wc2026_predictions") || "[]");
 const $ = id => document.getElementById(id);
 
+function initTheme(){
+  const saved = localStorage.getItem("wc2026_theme");
+  const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  setTheme(saved || (prefersLight ? 'light' : 'dark'));
+  const btn = $("themeBtn");
+  if(btn) btn.onclick = () => setTheme(document.body.classList.contains('light') ? 'dark' : 'light');
+}
+function setTheme(mode){
+  document.body.classList.toggle('light', mode === 'light');
+  localStorage.setItem("wc2026_theme", mode);
+  const btn = $("themeBtn");
+  if(btn) btn.textContent = mode === 'light' ? '☀️ Claro' : '🌙 Oscuro';
+}
+function syncMobileFilters(){
+  if(!$("mTeamFilter")) return;
+  $("mTeamFilter").value = $("teamFilter").value;
+  $("mGroupFilter").value = $("groupFilter").value;
+  $("mPhaseFilter").value = $("phaseFilter").value;
+  $("mSearchInput").value = $("searchInput").value;
+}
+function applyMobileFilters(){
+  if(!$("mTeamFilter")) return;
+  $("teamFilter").value = $("mTeamFilter").value;
+  $("groupFilter").value = $("mGroupFilter").value;
+  $("phaseFilter").value = $("mPhaseFilter").value;
+  $("searchInput").value = $("mSearchInput").value;
+  renderAll();
+}
+function openMobileFilters(){ const o=$("filterOverlay"); if(o){syncMobileFilters(); o.classList.add('open'); o.setAttribute('aria-hidden','false');} }
+function closeMobileFilters(){ const o=$("filterOverlay"); if(o){o.classList.remove('open'); o.setAttribute('aria-hidden','true');} }
+function bindMobileFilters(){
+  if(!$("mobileFilterBtn")) return;
+  $("mobileFilterBtn").onclick=openMobileFilters;
+  $("closeMobileFilters").onclick=closeMobileFilters;
+  $("applyMobileFilters").onclick=()=>{applyMobileFilters(); closeMobileFilters();};
+  $("mClearBtn").onclick=()=>{["mTeamFilter","mGroupFilter","mPhaseFilter","mSearchInput"].forEach(id=>$(id).value=""); applyMobileFilters();};
+  $("filterOverlay").addEventListener('click', e=>{ if(e.target.id==='filterOverlay') closeMobileFilters(); });
+  ["mTeamFilter","mGroupFilter","mPhaseFilter","mSearchInput"].forEach(id=>$(id).addEventListener("input", applyMobileFilters));
+}
+
 function init(){
   $("mCount").textContent = MATCHES.length;
   $("tCount").textContent = TEAMS.length;
   $("cCount").textContent = new Set(MATCHES.map(m=>m.city)).size;
-  fillFilters(); bindEvents(); renderAll();
+  initTheme(); fillFilters(); bindEvents(); renderAll();
 }
 function fillFilters(){
   TEAMS.forEach(t=>{
@@ -331,17 +430,18 @@ function fillFilters(){
     if($("weekTeamFilter")) $("weekTeamFilter").appendChild(new Option(`${t.flag} ${t.name}`, t.code));
   });
   [...new Set(TEAMS.map(t=>t.group))].forEach(g=>$("groupFilter").appendChild(new Option("Grupo "+g,g)));
-  [...new Set(MATCHES.map(m=>m.phase))].forEach(p=>$("phaseFilter").appendChild(new Option(p,p)));
+  [...new Set(MATCHES.map(m=>m.phase))].forEach(p=>{ $("phaseFilter").appendChild(new Option(p,p)); if($("mPhaseFilter")) $("mPhaseFilter").appendChild(new Option(p,p)); });
 }
 function bindEvents(){
-  ["teamFilter","groupFilter","phaseFilter","searchInput"].forEach(id=>$(id).addEventListener("input", renderAll));
+  ["teamFilter","groupFilter","phaseFilter","searchInput"].forEach(id=>$(id).addEventListener("input", ()=>{syncMobileFilters(); renderAll();}));
+  bindMobileFilters();
   if($("weekDate")){
     $("weekDate").value = bestInitialWeekDate();
     $("weekDate").addEventListener("input", renderWeekCalendar);
     $("weekTeamFilter").addEventListener("input", renderWeekCalendar);
     $("weekTodayBtn").onclick=()=>{$("weekDate").value=chileTodayISO();renderWeekCalendar();};
   }
-  $("clearBtn").onclick=()=>{["teamFilter","groupFilter","phaseFilter","searchInput"].forEach(id=>$(id).value="");renderAll();};
+  $("clearBtn").onclick=()=>{["teamFilter","groupFilter","phaseFilter","searchInput"].forEach(id=>$(id).value="");syncMobileFilters();renderAll();};
   $("resetBtn").onclick=()=>{ if(confirm("¿Borrar todos los resultados guardados?")){results={};localStorage.removeItem("wc2026_results");renderAll();} };
   document.querySelectorAll(".tab").forEach(btn=>btn.onclick=()=>{document.querySelectorAll(".tab,.view").forEach(x=>x.classList.remove("active"));btn.classList.add("active");$(btn.dataset.view).classList.add("active");renderAll();});
   $("addPrediction").onclick=()=>{const name=$("personName").value.trim(); if(!name) return alert("Falta nombre"); predictions.push({name,champion:$("championPick").value,runner:$("runnerPick").value,scorer:$("scorerPick").value.trim()}); localStorage.setItem("wc2026_predictions",JSON.stringify(predictions)); $("personName").value=$("scorerPick").value=""; renderPredictions();};

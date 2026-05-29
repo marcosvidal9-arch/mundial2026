@@ -1,16 +1,24 @@
-# Mundial 2026 · Oficina LA
+# Mundial 2026 · Oficina LA — V11 Final
 
-Versión standalone: abre `index.html` con doble clic.
+Web estática para seguir el Mundial 2026 en la oficina.
 
-Cambios v4:
-- Diseño tipo dashboard.
-- Logo Heligrafics + texto OFICINA LA.
-- Imagen representativa del Mundial 2026 integrada.
-- Nombre cambiado a "Pronósticos oficina".
+## Incluye
+
+- Calendario completo.
+- Filtros por equipo, grupo, fase y búsqueda.
+- Botón flotante de filtros en celular.
+- Modo claro / oscuro con preferencia guardada.
 - Tablas de grupos automáticas.
-- Cruces que se van resolviendo con resultados.
-- Partidos de hoy.
-- Resultados guardados en LocalStorage del navegador.
+- Cruces con avance automático.
+- Selector de clasificado en fases KO si hay empate.
+- Calendario semanal.
+- Pronósticos oficina.
+- Resultados guardados en LocalStorage.
 
-Nota:
-Los cruces se resuelven automáticamente cuando hay ganador claro. En eliminatorias, si hay empate, no avanza nadie hasta definir marcador/ganador.
+## Uso
+
+Abre `index.html` con doble clic o súbelo a GitHub Pages.
+
+## Nota
+
+Los datos vienen del calendario base cargado en el proyecto. Conviene revisar manualmente algún horario/equipo antes de usarlo oficialmente con colegas.
