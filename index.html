@@ -62,6 +62,10 @@ select,input{width:100%;margin-top:6px;padding:11px 12px;border-radius:8px;borde
 .flag-img{width:31px;height:22px;object-fit:cover;border-radius:4px;box-shadow:0 4px 10px rgba(0,0,0,.35);flex:0 0 auto}
 .score-input{width:44px;height:34px;text-align:center;background:#f8fafc;color:#06140f;font-weight:1000;padding:4px;margin:0}
 .score-input:disabled{opacity:.45;cursor:not-allowed}
+.ko-advance{grid-column:2/7;display:none;align-items:center;gap:8px;background:rgba(246,196,59,.10);border:1px solid rgba(246,196,59,.28);border-radius:12px;padding:8px 10px;color:#fff}
+.ko-advance.show{display:flex}
+.ko-advance label{font-size:11px;color:#f6c43b;font-weight:1000;text-transform:uppercase;letter-spacing:.04em}
+.ko-advance select{min-height:34px;padding:6px 10px;font-size:13px;background:#06140f;border-color:rgba(246,196,59,.35)}
 .group-badge{font-weight:1000;text-align:center;color:#fff}
 .status{text-align:right;color:var(--muted);font-size:12px;min-width:0}.winner-line{display:block;color:#74ff9e;font-weight:900;margin-top:4px}.pending-line{display:block;color:#ffd166;font-weight:900;margin-top:4px}
 .mini-standings{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:12px;padding:12px}
@@ -90,7 +94,120 @@ select,input{width:100%;margin-top:6px;padding:11px 12px;border-radius:8px;borde
 .badge{display:inline-block;padding:3px 8px;border-radius:999px;background:rgba(34,197,94,.15);color:#74ff9e;font-weight:900}
 .pred-form{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:10px;margin-bottom:14px}
 .note{color:var(--muted);font-size:13px;line-height:1.45}
-@media(max-width:1050px){.top,.grid{grid-template-columns:1fr}.world{justify-content:flex-start}.match{grid-template-columns:70px minmax(0,1fr) 42px 22px 42px minmax(0,1fr);gap:7px}.group-badge,.status{grid-column:1/-1;text-align:left}.pred-form{grid-template-columns:1fr}}
+
+.week-controls{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
+.week-summary{padding:0 16px 12px;color:var(--muted);font-size:13px}
+.week-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;padding:12px 16px 16px}
+.day-card{min-height:170px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:.15s}
+.day-card:hover{border-color:rgba(34,197,94,.55);transform:translateY(-1px)}
+.day-card.active{border-color:var(--green);box-shadow:0 0 0 1px rgba(34,197,94,.25), inset 0 0 24px rgba(34,197,94,.08)}
+.day-card.empty{opacity:.72}
+.day-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:8px}
+.day-name{text-transform:uppercase;color:#93ffb6;font-weight:900;font-size:12px;letter-spacing:.05em}
+.day-date{font-weight:900;font-size:15px;text-align:right}
+.day-count{font-size:11px;color:var(--muted);font-weight:800}
+.day-mini-list{display:grid;gap:7px;min-width:0}
+.day-mini-match{display:grid;grid-template-columns:43px minmax(0,1fr);gap:7px;align-items:center;padding:7px;border-radius:10px;background:rgba(0,0,0,.16);min-width:0}
+.day-mini-match .time{font-size:12px;color:#d9fff0;font-weight:900}
+.day-mini-teams{min-width:0;display:flex;align-items:center;gap:5px;overflow:hidden}
+.day-mini-teams .flag-img{width:20px;height:14px;border-radius:3px;box-shadow:none}
+.day-mini-teams .mini-vs{font-size:10px;color:var(--muted);font-weight:1000;flex:0 0 auto}
+.more-matches{font-size:11px;color:var(--gold);font-weight:900;padding-left:4px}
+.selected-day-box{border-top:1px solid rgba(255,255,255,.08)}
+.selected-day-box h3{padding:0;margin:0 0 12px;font-size:18px;color:#93ffb6}
+.selected-day-matches{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+.day-detail-card{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:10px}
+.day-detail-card .time{font-weight:900;color:#d9fff0}
+.day-detail-card .city{font-size:12px;color:var(--muted);text-align:right}
+.day-detail-teams{display:grid;gap:6px;font-weight:900;min-width:0}
+.day-detail-teams .team{font-size:14px}
+
+@media(max-width:1050px){
+  .top,.grid{grid-template-columns:1fr}
+  .world{justify-content:flex-start}
+  .nav{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;padding-bottom:6px}
+  .nav .tab,.nav button{white-space:nowrap;flex:0 0 auto}
+  .spacer{display:none}
+  .match{grid-template-columns:70px minmax(0,1fr) 42px 22px 42px minmax(0,1fr);gap:7px}
+  .group-badge,.status{grid-column:1/-1;text-align:left}
+  .pred-form{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  body{font-size:14px;overflow-x:hidden}
+  .app{padding:10px}
+  .top{gap:12px;padding:14px;border-radius:18px}
+  .brand{gap:8px;align-items:flex-start}
+  .brand img{max-width:150px;height:auto}
+  .brand .office{font-size:18px;letter-spacing:.06em;margin-top:4px}
+  .title h1{font-size:42px;line-height:.9;text-align:left}
+  .title p{font-size:13px;letter-spacing:.08em;text-align:left}
+  .world img{max-width:120px;border-radius:14px}
+  .nav{position:sticky;top:0;z-index:20;margin:10px 0;border-radius:14px;background:rgba(2,15,12,.92);backdrop-filter:blur(10px)}
+  .nav button,.tab{padding:10px 12px;font-size:12px;border-radius:10px}
+  .grid{gap:12px}
+  aside{order:2}
+  main.grid > section, .view{min-width:0}
+  .panel{border-radius:16px;overflow:hidden}
+  .panel h3,.panel h2{font-size:17px;padding:14px 14px 10px}
+  .panel-body,.filters{padding:12px}
+  .filters{display:grid;grid-template-columns:1fr;gap:10px}
+  select,input,button{font-size:16px;min-height:44px}
+  .match-list{max-height:none;overflow:visible;padding:8px}
+  .match{display:grid;grid-template-columns:1fr auto 1fr;gap:8px 10px;padding:14px 12px;border:1px solid rgba(255,255,255,.10);border-radius:14px;margin-bottom:10px;background:rgba(255,255,255,.045)}
+  .date{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
+  .date small{display:inline;margin:0;color:#fff;font-weight:800}
+  .team{gap:7px;font-size:14px;align-items:center;min-width:0}
+  .team.away{justify-content:flex-end}
+  .team-name{white-space:normal;line-height:1.12;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .flag-img{width:28px;height:20px;border-radius:4px}
+  .flag{font-size:22px}
+  .score-input{width:42px;height:38px;border-radius:10px;font-size:16px;padding:2px}
+  .ko-advance{grid-column:1/-1;display:none}
+  .ko-advance.show{display:grid;grid-template-columns:auto 1fr}
+  .vs{font-size:12px;align-self:center}
+  .group-badge{grid-column:1/2;text-align:left;font-size:12px;color:var(--muted)}
+  .status{grid-column:2/4;text-align:right;font-size:12px}
+  .badge{padding:4px 8px;font-size:11px}
+  .mini-standings{grid-template-columns:1fr;padding:8px;gap:10px}
+  .mini-card{padding:10px;border-radius:14px;overflow:hidden}
+  .mini-card h4{font-size:16px;margin-bottom:10px}
+  .standing-header,.standing-row{grid-template-columns:minmax(0,1fr) 30px 34px 38px;gap:6px;font-size:13px}
+  .standing-header{font-size:9px}
+  .standing-team{gap:6px;font-size:13px}
+  .standing-team .flag-img{width:26px;height:18px}
+  .pos{width:22px;height:22px;flex-basis:22px;font-size:12px}
+  .bracket-list{padding:8px}
+  .bracket-card{border-radius:14px;padding:12px}
+  .bracket-head{font-size:12px}
+  .today-teams{grid-template-columns:1fr auto 1fr;font-size:14px}
+  .stat-row{grid-template-columns:repeat(3,1fr)}
+  .stat strong{font-size:22px}
+  .stat span{font-size:10px}
+  .week-controls{grid-template-columns:1fr;gap:10px}
+  .week-calendar{display:flex;overflow-x:auto;gap:10px;padding:10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  .day-card{min-width:78%;scroll-snap-align:start;min-height:150px}
+  .selected-day-matches{grid-template-columns:1fr}
+  .day-detail-card{grid-template-columns:1fr;gap:8px}
+  .day-detail-card .city{text-align:left}
+  table{font-size:13px;display:block;overflow-x:auto;white-space:nowrap}
+  footer{font-size:12px;padding:18px 8px}
+}
+@media(max-width:420px){
+  .title h1{font-size:34px}
+  .brand img{max-width:132px}
+  .world img{max-width:96px}
+  .match{grid-template-columns:minmax(0,1fr) 38px 22px 38px minmax(0,1fr)}
+  .date{grid-column:1/-1}
+  .match > .team:first-of-type{grid-column:1/2}
+  .match > .score-input:first-of-type{grid-column:2/3}
+  .match > .vs{grid-column:3/4}
+  .match > .score-input:nth-of-type(2){grid-column:4/5}
+  .match > .team.away{grid-column:5/6}
+  .group-badge{grid-column:1/2}
+  .status{grid-column:2/-1}
+  .team{font-size:13px}
+  .score-input{width:36px;height:36px}
+}
 </style>
 </head>
 <body>
@@ -103,6 +220,7 @@ select,input{width:100%;margin-top:6px;padding:11px 12px;border-radius:8px;borde
 
   <nav class="nav">
     <button class="tab active" data-view="dashboard">📅 Calendario</button>
+    <button class="tab" data-view="weekView">🗓️ Semana</button>
     <button class="tab" data-view="standingsView">🏆 Tablas</button>
     <button class="tab" data-view="bracketView">⚽ Cruces</button>
     <button class="tab" data-view="predictionsView">🎯 Pronósticos oficina</button>
@@ -150,6 +268,22 @@ select,input{width:100%;margin-top:6px;padding:11px 12px;border-radius:8px;borde
           <div id="miniStandings" class="mini-standings"></div>
         </section>
       </div>
+      <div id="weekView" class="view">
+        <section class="panel week-panel">
+          <h2>🗓️ Calendario semanal</h2>
+          <div class="panel-body week-controls">
+            <label>Día base<input id="weekDate" type="date"></label>
+            <label>Selección<select id="weekTeamFilter"><option value="">Todas</option></select></label>
+            <button id="weekTodayBtn" class="green">Ir a hoy</button>
+          </div>
+          <div id="weekSummary" class="week-summary"></div>
+          <div id="weekCalendar" class="week-calendar"></div>
+          <div class="panel-body selected-day-box">
+            <h3 id="selectedDayTitle">Partidos del día</h3>
+            <div id="selectedDayMatches" class="selected-day-matches"></div>
+          </div>
+        </section>
+      </div>
       <div id="standingsView" class="view"><section class="panel"><h2>🏆 Tablas de grupos</h2><div id="standingsGrid" class="mini-standings"></div></section></div>
       <div id="bracketView" class="view"><section class="panel"><h2>⚽ Cruces actualizados</h2><div id="bracketGrid" class="bracket-list"></div></section></div>
       <div id="predictionsView" class="view">
@@ -194,12 +328,19 @@ function fillFilters(){
     $("teamFilter").appendChild(new Option(`${t.flag} ${t.name}`, t.code));
     $("championPick").appendChild(new Option(`${t.flag} ${t.name}`, t.code));
     $("runnerPick").appendChild(new Option(`${t.flag} ${t.name}`, t.code));
+    if($("weekTeamFilter")) $("weekTeamFilter").appendChild(new Option(`${t.flag} ${t.name}`, t.code));
   });
   [...new Set(TEAMS.map(t=>t.group))].forEach(g=>$("groupFilter").appendChild(new Option("Grupo "+g,g)));
   [...new Set(MATCHES.map(m=>m.phase))].forEach(p=>$("phaseFilter").appendChild(new Option(p,p)));
 }
 function bindEvents(){
   ["teamFilter","groupFilter","phaseFilter","searchInput"].forEach(id=>$(id).addEventListener("input", renderAll));
+  if($("weekDate")){
+    $("weekDate").value = bestInitialWeekDate();
+    $("weekDate").addEventListener("input", renderWeekCalendar);
+    $("weekTeamFilter").addEventListener("input", renderWeekCalendar);
+    $("weekTodayBtn").onclick=()=>{$("weekDate").value=chileTodayISO();renderWeekCalendar();};
+  }
   $("clearBtn").onclick=()=>{["teamFilter","groupFilter","phaseFilter","searchInput"].forEach(id=>$(id).value="");renderAll();};
   $("resetBtn").onclick=()=>{ if(confirm("¿Borrar todos los resultados guardados?")){results={};localStorage.removeItem("wc2026_results");renderAll();} };
   document.querySelectorAll(".tab").forEach(btn=>btn.onclick=()=>{document.querySelectorAll(".tab,.view").forEach(x=>x.classList.remove("active"));btn.classList.add("active");$(btn.dataset.view).classList.add("active");renderAll();});
@@ -227,12 +368,29 @@ function chileTodayISO(){
 }
 function score(m){ return results[m.id] || {}; }
 function winnerOfMatch(id){
-  const m=MATCHES.find(x=>x.id==id), r=m&&score(m); if(!m || r.home===undefined || r.away===undefined || r.home===r.away) return null;
-  return r.home>r.away ? resolveSlot(m.home) : resolveSlot(m.away);
+  const m=MATCHES.find(x=>x.id==id), r=m&&score(m);
+  if(!m || r.home===undefined || r.away===undefined) return null;
+  const homeTeam=resolveSlot(m.home), awayTeam=resolveSlot(m.away);
+  if(+r.home>+r.away) return homeTeam;
+  if(+r.home<+r.away) return awayTeam;
+  // En fase KO puede haber empate en 90/120 min: se elige quién clasifica por alargue/penales.
+  if(m.phase!=="Group Stage" && r.winner){
+    if(r.winner==="home") return homeTeam;
+    if(r.winner==="away") return awayTeam;
+  }
+  return null;
 }
 function loserOfMatch(id){
-  const m=MATCHES.find(x=>x.id==id), r=m&&score(m); if(!m || r.home===undefined || r.away===undefined || r.home===r.away) return null;
-  return r.home>r.away ? resolveSlot(m.away) : resolveSlot(m.home);
+  const m=MATCHES.find(x=>x.id==id), r=m&&score(m);
+  if(!m || r.home===undefined || r.away===undefined) return null;
+  const homeTeam=resolveSlot(m.home), awayTeam=resolveSlot(m.away);
+  if(+r.home>+r.away) return awayTeam;
+  if(+r.home<+r.away) return homeTeam;
+  if(m.phase!=="Group Stage" && r.winner){
+    if(r.winner==="home") return awayTeam;
+    if(r.winner==="away") return homeTeam;
+  }
+  return null;
 }
 function standings(){
   const out={};
@@ -273,7 +431,25 @@ function filteredMatches(){
     return !q || txt.includes(q);
   }).sort((a,b)=>(a.date+a.time_et).localeCompare(b.date+b.time_et));
 }
-function saveScore(id,side,value){results[id]=results[id]||{}; if(value==="") delete results[id][side]; else results[id][side]=Number(value); localStorage.setItem("wc2026_results",JSON.stringify(results)); renderAll();}
+function saveScore(id,side,value){
+  results[id]=results[id]||{};
+  if(value==="") delete results[id][side]; else results[id][side]=Number(value);
+  const m=MATCHES.find(x=>x.id==id);
+  // Si deja de haber empate o borra un marcador, limpiamos el clasificado manual.
+  if(!m || m.phase==="Group Stage" || results[id].home===undefined || results[id].away===undefined || +results[id].home!==+results[id].away){
+    delete results[id].winner;
+  }
+  localStorage.setItem("wc2026_results",JSON.stringify(results)); renderAll();
+}
+function saveKOAdvancer(id,value){
+  results[id]=results[id]||{};
+  if(value) results[id].winner=value; else delete results[id].winner;
+  localStorage.setItem("wc2026_results",JSON.stringify(results)); renderAll();
+}
+function koAdvanceSelect(m,h,a,r,show){
+  if(!show) return "";
+  return `<div class="ko-advance show"><label>Clasifica por alargue/penales</label><select onchange="saveKOAdvancer(${m.id},this.value)"><option value="">Elegir clasificado</option><option value="home" ${r.winner==="home"?"selected":""}>${h.name}</option><option value="away" ${r.winner==="away"?"selected":""}>${a.name}</option></select></div>`;
+}
 function renderMatches(){
   $("matches").innerHTML = filteredMatches().map(m=>{
     const h=resolveSlot(m.home)||{name:m.home_name||m.home,flag:m.home_flag,code:m.home};
@@ -283,16 +459,18 @@ function renderMatches(){
     const done=r.home!==undefined&&r.away!==undefined;
     const ready = m.phase==="Group Stage" || (isKnownTeam(h) && isKnownTeam(a));
     const win = winnerOfMatch(m.id);
-    const info = done && win ? `<span class="winner-line">Ganador: ${win.name}</span>` : (!ready ? `<span class="pending-line">Completa cruces previos</span>` : "");
+    const tiedKO = done && m.phase!=="Group Stage" && +r.home===+r.away && ready;
+    const info = done && win ? `<span class="winner-line">Avanza: ${win.name}</span>` : (tiedKO ? `<span class="pending-line">Falta elegir clasificado</span>` : (!ready ? `<span class="pending-line">Cruce pendiente</span>` : ""));
     return `<div class="match">
       <div class="date">${date.toUpperCase()}<small>${m.time_et}</small></div>
       ${teamHTML(h)}
-      <input class="score-input" type="number" min="0" value="${r.home ?? ""}" ${ready?"":"disabled"} title="Goles de ${h.name}" onchange="saveScore(${m.id},'home',this.value)">
+      <input class="score-input" type="number" min="0" value="${r.home ?? ""}" title="Goles de ${h.name}" onchange="saveScore(${m.id},'home',this.value)">
       <div class="vs">vs</div>
-      <input class="score-input" type="number" min="0" value="${r.away ?? ""}" ${ready?"":"disabled"} title="Goles de ${a.name}" onchange="saveScore(${m.id},'away',this.value)">
+      <input class="score-input" type="number" min="0" value="${r.away ?? ""}" title="Goles de ${a.name}" onchange="saveScore(${m.id},'away',this.value)">
       ${teamHTML(a,true)}
       <div class="group-badge">${m.group||"-"}</div>
       <div class="status">${m.city}<br><span class="badge">${done?"Finalizado":"Sin jugar"}</span>${info}</div>
+      ${koAdvanceSelect(m,h,a,r,tiedKO)}
     </div>`;
   }).join("");
 }
@@ -332,6 +510,69 @@ function renderToday(){
  $("todayBox").innerHTML = `<div style="display:flex;justify-content:space-between;margin-bottom:12px;gap:10px"><b>Partidos de hoy</b><b style="color:#66ff96;text-align:right">${label}</b></div>` + 
  (list.length?list.map(m=>{const h=resolveSlot(m.home)||{name:m.home_name,flag:m.home_flag,code:m.home},a=resolveSlot(m.away)||{name:m.away_name,flag:m.away_flag,code:m.away};return `<div class="today-card"><span class="time">${m.time_et}</span><div class="today-teams"><span class="team">${teamHTML(h)}</span><span>vs</span><span class="team away">${teamHTML(a,true)}</span></div><div class="city">${m.city}</div></div>`}).join(""):`<p class="note">No hay partidos cargados para hoy según la fecha del computador en Chile.</p><p class="note"><b>Próximos partidos del calendario:</b></p>` + next.map(m=>{const h=resolveSlot(m.home)||{name:m.home_name,flag:m.home_flag,code:m.home},a=resolveSlot(m.away)||{name:m.away_name,flag:m.away_flag,code:m.away};return `<div class="today-card"><span class="time">${m.date} · ${m.time_et}</span><div class="today-teams"><span class="team">${teamHTML(h)}</span><span>vs</span><span class="team away">${teamHTML(a,true)}</span></div><div class="city">${m.city}</div></div>`}).join(""));
 }
+function isoDate(d){
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+function bestInitialWeekDate(){
+  const today=chileTodayISO();
+  const dates=MATCHES.map(m=>m.date).sort();
+  if(today>=dates[0] && today<=dates[dates.length-1]) return today;
+  return dates[0];
+}
+function mondayOf(dateStr){
+  const d=new Date(dateStr+"T00:00:00");
+  const day=d.getDay();
+  const diff=(day===0?-6:1-day);
+  d.setDate(d.getDate()+diff);
+  return d;
+}
+function matchIncludesTeam(m, code){
+  if(!code) return true;
+  const h=resolveSlot(m.home), a=resolveSlot(m.away);
+  return m.home===code || m.away===code || h?.code===code || a?.code===code;
+}
+function miniMatchLine(m){
+  const h=resolveSlot(m.home)||{name:m.home_name||m.home,flag:m.home_flag,code:m.home};
+  const a=resolveSlot(m.away)||{name:m.away_name||m.away,flag:m.away_flag,code:m.away};
+  return `<div class="day-mini-match"><span class="time">${m.time_et}</span><div class="day-mini-teams" title="${h.name} vs ${a.name}">${flagHTML(h)}<span class="mini-vs">vs</span>${flagHTML(a)}</div></div>`;
+}
+function detailMatchCard(m){
+  const h=resolveSlot(m.home)||{name:m.home_name||m.home,flag:m.home_flag,code:m.home};
+  const a=resolveSlot(m.away)||{name:m.away_name||m.away,flag:m.away_flag,code:m.away};
+  const r=score(m);
+  const result=(r.home!==undefined&&r.away!==undefined)?`${r.home} - ${r.away}`:"Sin jugar";
+  return `<div class="day-detail-card"><div class="time">${m.time_et}</div><div class="day-detail-teams"><div>${teamHTML(h)}</div><div>${teamHTML(a,true)}</div></div><div class="city">${m.city}<br><span class="badge">${result}</span></div></div>`;
+}
+function renderWeekCalendar(){
+  if(!$("weekDate")) return;
+  const selected=$("weekDate").value || bestInitialWeekDate();
+  const teamCode=$("weekTeamFilter").value;
+  const start=mondayOf(selected);
+  const days=[...Array(7)].map((_,i)=>{const d=new Date(start); d.setDate(start.getDate()+i); return d;});
+  const fmtDay=new Intl.DateTimeFormat('es-CL',{weekday:'short'});
+  const fmtDate=new Intl.DateTimeFormat('es-CL',{day:'2-digit',month:'short'});
+  const weekStart=isoDate(days[0]), weekEnd=isoDate(days[6]);
+  const teamLabel=teamCode?team(teamCode).name:"todas las selecciones";
+  $("weekSummary").innerHTML=`Semana ${fmtDate.format(days[0])} - ${fmtDate.format(days[6])} · Mostrando ${teamLabel}`;
+  $("weekCalendar").innerHTML=days.map(d=>{
+    const ds=isoDate(d);
+    const list=MATCHES.filter(m=>m.date===ds && matchIncludesTeam(m,teamCode)).sort((a,b)=>a.time_et.localeCompare(b.time_et));
+    return `<div class="day-card ${ds===selected?'active':''} ${list.length?'':'empty'}" onclick="selectWeekDay('${ds}')"><div class="day-head"><div><div class="day-name">${fmtDay.format(d)}</div><div class="day-count">${list.length} partido${list.length===1?'':'s'}</div></div><div class="day-date">${fmtDate.format(d).replace('.','')}</div></div><div class="day-mini-list">${list.slice(0,3).map(miniMatchLine).join('')}${list.length>3?`<div class="more-matches">+${list.length-3} más</div>`:''}${!list.length?'<p class="note">Sin partidos</p>':''}</div></div>`;
+  }).join("");
+  renderSelectedDayMatches(selected, teamCode);
+}
+function selectWeekDay(dateStr){
+  $("weekDate").value=dateStr;
+  renderWeekCalendar();
+}
+function renderSelectedDayMatches(dateStr, teamCode){
+  const d=new Date(dateStr+"T00:00:00");
+  const label=d.toLocaleDateString('es-CL',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  const list=MATCHES.filter(m=>m.date===dateStr && matchIncludesTeam(m,teamCode)).sort((a,b)=>a.time_et.localeCompare(b.time_et));
+  $("selectedDayTitle").textContent=`Partidos del ${label}`;
+  $("selectedDayMatches").innerHTML=list.length?list.map(detailMatchCard).join(""):`<p class="note">No hay partidos para este día con el filtro seleccionado.</p>`;
+}
 function renderPredictions(){
  $("predictionRows").innerHTML=predictions.map((p,i)=>{const c=team(p.champion), r=team(p.runner); return `<tr><td>${p.name}</td><td>${flagHTML(c)} ${c.name}</td><td>${flagHTML(r)} ${r.name}</td><td>${p.scorer||"-"}</td><td><button onclick="deletePrediction(${i})">X</button></td></tr>`}).join("");
 }
@@ -340,7 +581,7 @@ function renderQC(){
  const dup=MATCHES.length-new Set(MATCHES.map(m=>m.id)).size;
  $("qc").innerHTML=`<p><span class="badge">${MATCHES.length}</span> partidos cargados.</p><p><span class="badge">${TEAMS.length}</span> selecciones cargadas.</p><p><span class="badge">${new Set(TEAMS.map(t=>t.group)).size}</span> grupos cargados.</p><p>Duplicados de ID: <b>${dup}</b></p><p class="note">Los cruces se actualizan con resultados. Si un partido queda empatado en fase KO, no avanza nadie hasta corregir/definir ganador.</p>`;
 }
-function renderAll(){renderMatches();renderStandings();renderBracket();renderToday();renderPredictions();renderQC();}
+function renderAll(){renderMatches();renderStandings();renderBracket();renderToday();renderWeekCalendar();renderPredictions();renderQC();}
 init();
 </script>
 </body>
