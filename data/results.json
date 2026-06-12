@@ -1,0 +1,12 @@
+{
+  "1": {
+    "home": 2,
+    "away": 0,
+    "status": "final"
+  },
+  "2": {
+    "home": 2,
+    "away": 1,
+    "status": "final"
+  }
+}

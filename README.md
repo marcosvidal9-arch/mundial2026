@@ -1,19 +1,49 @@
-# Mundial 2026 Tracker - V14 Pública
+# Mundial 2026 Tracker - V15 Data Driven
 
-Versión global del tracker del Mundial 2026.
+Versión basada en V14 pública, pero con resultados centralizados en `data/results.json`.
 
-## Cambios principales
+## Cómo actualizar resultados globalmente
 
-- Se eliminó la sección de Pronósticos oficina.
-- Se eliminó la identidad visual de Heligrafics / Oficina LA.
-- Se agregó una pestaña **Estadísticas**.
-- Estadísticas por selección: PJ, PG, PE, PP, GF, GC, DG, puntos de grupo y posición.
-- Mantiene calendario, semana, tablas, cruces, modo claro/oscuro y resultados editables.
+1. Entra al repositorio de GitHub.
+2. Abre el archivo `data/results.json`.
+3. Edita o agrega el resultado usando el ID del partido.
+4. Guarda el cambio con Commit.
+5. GitHub Pages mostrará los resultados actualizados al recargar.
 
-## Uso
+Ejemplo:
 
-Abre `index.html` en el navegador o súbelo a GitHub Pages.
+```json
+{
+  "1": { "home": 2, "away": 0, "status": "final" },
+  "2": { "home": 2, "away": 1, "status": "final" }
+}
+```
 
-## Nota
+## Cómo identificar el ID
 
-Los resultados siguen guardándose en `localStorage`. Para una futura V15 global, se recomienda mover resultados a `results.json` para que todos los usuarios vean la misma información actualizada.
+En la app cada partido tiene su número de match. Ese número es la clave usada en `results.json`.
+
+- Match 1: México vs Sudáfrica
+- Match 2: Corea del Sur vs Chequia
+
+## Fase eliminatoria con empate
+
+Si un partido de eliminación directa termina empatado y clasifica alguien por alargue o penales, agrega `winner`:
+
+```json
+{
+  "89": { "home": 1, "away": 1, "winner": "home", "method": "penales", "status": "final" }
+}
+```
+
+Valores posibles para `winner`:
+- `home`: clasifica el equipo local de esa tarjeta
+- `away`: clasifica el equipo visitante de esa tarjeta
+
+## Nota local
+
+Al abrir el HTML con doble clic, algunos navegadores bloquean `fetch` de archivos JSON. Para probar la actualización real, súbelo a GitHub Pages o ejecútalo con un servidor local simple:
+
+```bash
+python -m http.server
+```

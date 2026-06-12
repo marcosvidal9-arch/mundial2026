@@ -1,0 +1,105 @@
+id,date,time_cl,phase,group,home,away,home_name,away_name,city
+1,2026-06-11,15:00,Group Stage,A,MEX,RSA,México,Sudáfrica,Mexico City
+2,2026-06-11,22:00,Group Stage,A,KOR,CZE,Corea del Sur,Chequia,Guadalajara
+3,2026-06-12,15:00,Group Stage,B,CAN,BIH,Canadá,Bosnia y Herzegovina,Toronto
+4,2026-06-12,21:00,Group Stage,D,USA,PAR,Estados Unidos,Paraguay,Los Angeles
+5,2026-06-13,21:00,Group Stage,C,HAI,SCO,Haití,Escocia,Boston
+6,2026-06-14,00:00,Group Stage,D,AUS,TUR,Australia,Turquía,Vancouver
+7,2026-06-13,18:00,Group Stage,C,BRA,MAR,Brasil,Marruecos,New York / New Jersey
+8,2026-06-13,15:00,Group Stage,B,QAT,SUI,Catar,Suiza,San Francisco Bay
+9,2026-06-14,19:00,Group Stage,E,CIV,ECU,Costa de Marfil,Ecuador,Philadelphia
+10,2026-06-14,13:00,Group Stage,E,GER,CUW,Alemania,Curazao,Houston
+11,2026-06-14,16:00,Group Stage,F,NED,JPN,Países Bajos,Japón,Dallas
+12,2026-06-14,22:00,Group Stage,F,TUN,SWE,Túnez,Suecia,Monterrey
+13,2026-06-26,23:00,Group Stage,G,NZL,BEL,Nueva Zelanda,Bélgica,Vancouver
+14,2026-06-26,23:00,Group Stage,G,EGY,IRN,Egipto,Irán,Seattle
+15,2026-06-25,19:00,Group Stage,F,JPN,SWE,Japón,Suecia,Dallas
+16,2026-06-25,19:00,Group Stage,F,TUN,NED,Túnez,Países Bajos,Kansas City
+17,2026-06-26,20:00,Group Stage,H,URU,ESP,Uruguay,España,Guadalajara
+18,2026-06-26,20:00,Group Stage,H,CPV,KSA,Cabo Verde,Arabia Saudita,Houston
+19,2026-06-26,15:00,Group Stage,I,NOR,FRA,Noruega,Francia,Boston
+20,2026-06-26,15:00,Group Stage,I,SEN,IRQ,Senegal,Irak,Toronto
+21,2026-06-27,19:30,Group Stage,K,COD,UZB,RD Congo,Uzbekistán,Atlanta
+22,2026-06-27,19:30,Group Stage,K,COL,POR,Colombia,Portugal,Miami
+23,2026-06-17,00:00,Group Stage,J,AUT,JOR,Austria,Jordania,San Francisco Bay
+24,2026-06-27,22:00,Group Stage,J,ARG,JOR,Argentina,Jordania,Dallas
+25,2026-06-18,12:00,Group Stage,A,CZE,RSA,Chequia,Sudáfrica,Atlanta
+26,2026-06-18,15:00,Group Stage,B,SUI,BIH,Suiza,Bosnia y Herzegovina,Los Angeles
+27,2026-06-18,18:00,Group Stage,B,CAN,QAT,Canadá,Catar,Vancouver
+28,2026-06-18,21:00,Group Stage,A,MEX,KOR,México,Corea del Sur,Guadalajara
+29,2026-06-19,21:00,Group Stage,C,BRA,HAI,Brasil,Haití,Philadelphia
+30,2026-06-19,15:00,Group Stage,C,SCO,MAR,Escocia,Marruecos,Boston
+31,2026-06-20,00:00,Group Stage,D,TUR,PAR,Turquía,Paraguay,San Francisco Bay
+32,2026-06-19,15:00,Group Stage,D,USA,AUS,Estados Unidos,Australia,Seattle
+33,2026-06-20,16:00,Group Stage,E,GER,CIV,Alemania,Costa de Marfil,Toronto
+34,2026-06-20,20:00,Group Stage,E,ECU,CUW,Ecuador,Curazao,Kansas City
+35,2026-06-20,13:00,Group Stage,F,NED,SWE,Países Bajos,Suecia,Houston
+36,2026-06-21,00:00,Group Stage,F,TUN,JPN,Túnez,Japón,Monterrey
+37,2026-06-15,18:00,Group Stage,H,KSA,URU,Arabia Saudita,Uruguay,Miami
+38,2026-06-15,12:00,Group Stage,H,ESP,CPV,España,Cabo Verde,Atlanta
+39,2026-06-15,15:00,Group Stage,G,BEL,EGY,Bélgica,Egipto,Seattle
+40,2026-06-15,21:00,Group Stage,G,IRN,NZL,Irán,Nueva Zelanda,Los Angeles
+41,2026-06-16,18:00,Group Stage,I,IRQ,NOR,Irak,Noruega,Boston
+42,2026-06-16,15:00,Group Stage,I,FRA,SEN,Francia,Senegal,New York / New Jersey
+43,2026-06-22,13:00,Group Stage,J,ARG,AUT,Argentina,Austria,Dallas
+44,2026-06-22,23:00,Group Stage,J,JOR,ALG,Jordania,Argelia,San Francisco Bay
+45,2026-06-17,16:00,Group Stage,L,ENG,CRO,Inglaterra,Croacia,Dallas
+46,2026-06-17,19:00,Group Stage,L,GHA,PAN,Ghana,Panamá,Toronto
+47,2026-06-17,13:00,Group Stage,K,POR,COD,Portugal,RD Congo,Houston
+48,2026-06-17,22:00,Group Stage,K,UZB,COL,Uzbekistán,Colombia,Mexico City
+49,2026-06-24,18:00,Group Stage,C,BRA,SCO,Brasil,Escocia,Miami
+50,2026-06-24,18:00,Group Stage,C,MAR,HAI,Marruecos,Haití,Atlanta
+51,2026-06-24,15:00,Group Stage,B,SUI,CAN,Suiza,Canadá,Vancouver
+52,2026-06-24,15:00,Group Stage,B,BIH,QAT,Bosnia y Herzegovina,Catar,Seattle
+53,2026-06-24,21:00,Group Stage,A,MEX,CZE,México,Chequia,Mexico City
+54,2026-06-24,21:00,Group Stage,A,KOR,RSA,Corea del Sur,Sudáfrica,Monterrey
+55,2026-06-25,16:00,Group Stage,E,CUW,CIV,Curazao,Costa de Marfil,Philadelphia
+56,2026-06-25,16:00,Group Stage,E,ECU,GER,Ecuador,Alemania,New York / New Jersey
+57,2026-06-27,17:00,Group Stage,L,PAN,ENG,Panamá,Inglaterra,New York / New Jersey
+58,2026-06-27,17:00,Group Stage,L,CRO,GHA,Croacia,Ghana,Philadelphia
+59,2026-06-25,22:00,Group Stage,D,USA,TUR,Estados Unidos,Turquía,Los Angeles
+60,2026-06-25,22:00,Group Stage,D,PAR,AUS,Paraguay,Australia,San Francisco Bay
+61,2026-06-22,17:00,Group Stage,I,FRA,IRQ,Francia,Irak,Philadelphia
+62,2026-06-22,20:00,Group Stage,I,NOR,SEN,Noruega,Senegal,New York / New Jersey
+63,2026-06-21,15:00,Group Stage,G,BEL,IRN,Bélgica,Irán,Los Angeles
+64,2026-06-21,21:00,Group Stage,G,NZL,EGY,Nueva Zelanda,Egipto,Vancouver
+65,2026-06-21,12:00,Group Stage,H,ESP,KSA,España,Arabia Saudita,Atlanta
+66,2026-06-21,18:00,Group Stage,H,URU,CPV,Uruguay,Cabo Verde,Miami
+67,2026-06-23,16:00,Group Stage,L,ENG,GHA,Inglaterra,Ghana,Boston
+68,2026-06-23,19:00,Group Stage,L,PAN,CRO,Panamá,Croacia,Toronto
+69,2026-06-16,21:00,Group Stage,J,ARG,ALG,Argentina,Argelia,Kansas City
+70,2026-06-27,22:00,Group Stage,J,ALG,AUT,Argelia,Austria,Kansas City
+71,2026-06-23,13:00,Group Stage,K,POR,UZB,Portugal,Uzbekistán,Houston
+72,2026-06-23,22:00,Group Stage,K,COL,COD,Colombia,RD Congo,Guadalajara
+73,2026-06-28,15:00,Round of 32,,2A,2B,2A,2B,Los Angeles
+74,2026-06-29,16:30,Round of 32,,1E,3ABCDF,1E,3ABCDF,Boston
+75,2026-06-29,21:00,Round of 32,,1F,2C,1F,2C,Monterrey
+76,2026-06-29,13:00,Round of 32,,1C,2F,1C,2F,Houston
+77,2026-06-30,17:00,Round of 32,,1I,3CDFGH,1I,3CDFGH,New York / New Jersey
+78,2026-06-30,13:00,Round of 32,,2E,2I,2E,2I,Dallas
+79,2026-06-30,21:00,Round of 32,,1A,3CEFHI,1A,3CEFHI,Mexico City
+80,2026-07-01,12:00,Round of 32,,1L,3EHIJK,1L,3EHIJK,Atlanta
+81,2026-07-01,20:00,Round of 32,,1D,3BEFIJ,1D,3BEFIJ,San Francisco Bay
+82,2026-07-01,16:00,Round of 32,,1G,3AEHIJ,1G,3AEHIJ,Seattle
+83,2026-07-02,19:00,Round of 32,,2K,2L,2K,2L,Toronto
+84,2026-07-02,15:00,Round of 32,,1H,2J,1H,2J,Los Angeles
+85,2026-07-02,23:00,Round of 32,,1B,3EFGIJ,1B,3EFGIJ,Vancouver
+86,2026-07-03,18:00,Round of 32,,1J,2H,1J,2H,Miami
+87,2026-07-03,21:30,Round of 32,,1K,3DEIJL,1K,3DEIJL,Kansas City
+88,2026-07-03,14:00,Round of 32,,2D,2G,2D,2G,Dallas
+89,2026-07-04,17:00,Round of 16,,W74,W77,W74,W77,Philadelphia
+90,2026-07-04,13:00,Round of 16,,W73,W75,W73,W75,Houston
+91,2026-07-05,16:00,Round of 16,,W76,W78,W76,W78,New York / New Jersey
+92,2026-07-05,20:00,Round of 16,,W79,W80,W79,W80,Mexico City
+93,2026-07-06,15:00,Round of 16,,W83,W84,W83,W84,Dallas
+94,2026-07-06,20:00,Round of 16,,W81,W82,W81,W82,Seattle
+95,2026-07-07,12:00,Round of 16,,W86,W88,W86,W88,Atlanta
+96,2026-07-07,16:00,Round of 16,,W85,W87,W85,W87,Vancouver
+97,2026-07-09,16:00,Quarter-final,,W89,W90,W89,W90,Boston
+98,2026-07-10,15:00,Quarter-final,,W93,W94,W93,W94,Los Angeles
+99,2026-07-11,17:00,Quarter-final,,W91,W92,W91,W92,Miami
+100,2026-07-11,21:00,Quarter-final,,W95,W96,W95,W96,Kansas City
+101,2026-07-14,15:00,Semi-final,,W97,W98,W97,W98,Dallas
+102,2026-07-15,15:00,Semi-final,,W99,W100,W99,W100,Atlanta
+103,2026-07-18,17:00,Third place,,RU101,RU102,RU101,RU102,Miami
+104,2026-07-19,15:00,Final,,W101,W102,W101,W102,New York / New Jersey
