@@ -1,16 +1,19 @@
-# Mundial 2026 Tracker - V15 Data Driven
+# Mundial 2026 Tracker - V15.2
 
-Versión basada en V14 pública, pero con resultados centralizados en `data/results.json`.
+Versión basada en V15.1 con mejoras de visualización inspiradas en páginas tipo marcador deportivo.
 
-## Cómo actualizar resultados globalmente
+## Cambios principales
 
-1. Entra al repositorio de GitHub.
-2. Abre el archivo `data/results.json`.
-3. Edita o agrega el resultado usando el ID del partido.
-4. Guarda el cambio con Commit.
-5. GitHub Pages mostrará los resultados actualizados al recargar.
+- Mejora de tarjetas en el calendario semanal y partidos del día.
+- Visualización responsive corregida para computador y celular.
+- Etiquetas de fase más claras: grupos, 32avos, 16avos, cuartos, semifinal, tercer lugar y final.
+- Resultados mostrados como marcador central, evitando cruces de texto con banderas o ciudades.
+- Mantiene `data/results.json` como archivo separado para actualizar resultados desde GitHub.
+- Mantiene vista de cruces en lista y bracket visual.
 
-Ejemplo:
+## Actualizar resultados
+
+Editar `data/results.json`:
 
 ```json
 {
@@ -19,31 +22,8 @@ Ejemplo:
 }
 ```
 
-## Cómo identificar el ID
+Los resultados con `status: "final"` quedan bloqueados visualmente en la app.
 
-En la app cada partido tiene su número de match. Ese número es la clave usada en `results.json`.
+## Uso en GitHub Pages
 
-- Match 1: México vs Sudáfrica
-- Match 2: Corea del Sur vs Chequia
-
-## Fase eliminatoria con empate
-
-Si un partido de eliminación directa termina empatado y clasifica alguien por alargue o penales, agrega `winner`:
-
-```json
-{
-  "89": { "home": 1, "away": 1, "winner": "home", "method": "penales", "status": "final" }
-}
-```
-
-Valores posibles para `winner`:
-- `home`: clasifica el equipo local de esa tarjeta
-- `away`: clasifica el equipo visitante de esa tarjeta
-
-## Nota local
-
-Al abrir el HTML con doble clic, algunos navegadores bloquean `fetch` de archivos JSON. Para probar la actualización real, súbelo a GitHub Pages o ejecútalo con un servidor local simple:
-
-```bash
-python -m http.server
-```
+Subir todos los archivos al repositorio y activar GitHub Pages desde la rama principal.
