@@ -73,5 +73,10 @@
     "home": 1,
     "away": 1,
     "status": "final"
+  },
+  "40": {
+    "home": 2,
+    "away": 2,
+    "status": "final"
   }
 }
