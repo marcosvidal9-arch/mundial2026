@@ -95,8 +95,8 @@
     "status": "final"
   },
   "24": {
-    "home": 0,
-    "away": 3,
+    "home": 3,
+    "away": 0,
     "status": "final"
   }
 }
