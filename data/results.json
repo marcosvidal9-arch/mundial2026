@@ -103,5 +103,30 @@
     "home": 1,
     "away": 1,
     "status": "final"
+  },
+  "47": {
+    "home": 1,
+    "away": 1,
+    "status": "final"
+  },
+  "45": {
+    "home": 4,
+    "away": 2,
+    "status": "final"
+  },
+  "46": {
+    "home": 1,
+    "away": 0,
+    "status": "final"
+  },
+  "48": {
+    "home": 1,
+    "away": 3,
+    "status": "final"
+  },
+  "25": {
+    "home": 1,
+    "away": 1,
+    "status": "final"
   }
 }
